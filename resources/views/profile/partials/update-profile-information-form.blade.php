@@ -1,11 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+        <h2 class="text-lg font-black text-emerald-900 uppercase tracking-tighter italic">
+            {{ __('Informasi Profil Personil') }}
         </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+        <p class="mt-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {{ __("Perbarui data nama dan Nomor Induk Pegawai (NIP) Anda.") }}
         </p>
     </header>
 
@@ -18,46 +17,26 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input-label for="name" :value="__('Nama Lengkap')" class="font-black text-emerald-900 uppercase text-[10px] tracking-widest" />
+            <x-text-input id="name" name="name" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 rounded-2xl focus:ring-emerald-500 font-bold uppercase" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+            <x-input-label for="nip" :value="__('Nomor Induk Pegawai (NIP)')" class="font-black text-emerald-900 uppercase text-[10px] tracking-widest" />
+            <x-text-input id="nip" name="nip" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 rounded-2xl focus:ring-emerald-500 font-bold" :value="old('nip', $user->nip)" required />
+            <x-input-error class="mt-2" :messages="$errors->get('nip')" />
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 px-8 rounded-2xl transition-all shadow-lg shadow-emerald-100 text-[10px] tracking-widest uppercase active:scale-95">
+                {{ __('Simpan Perubahan') }}
+            </button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-[10px] font-black text-emerald-600 uppercase italic">
+                    {{ __('Data Berhasil Disimpan.') }}
+                </p>
             @endif
         </div>
     </form>

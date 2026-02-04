@@ -1,66 +1,178 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Statistik Perkara</title>
+    <title>Laporan Statistik Perkara - SIM-DATUN</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .box-container { margin-bottom: 30px; }
-        .box { display: inline-block; width: 30%; border: 1px solid #ccc; padding: 15px; text-align: center; border-radius: 8px; }
-        .label { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #666; }
-        .value { font-size: 24px; font-weight: bold; margin: 5px 0; color: #1e40af; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f8f9fa; font-weight: bold; }
-        .footer { margin-top: 50px; text-align: right; }
+        /* Standar Font Resmi Kejaksaan */
+        body { 
+            font-family: 'Times New Roman', Times, serif; 
+            font-size: 12pt; 
+            line-height: 1.5; 
+            color: #333; 
+        }
+        
+        /* Kop Surat Berjenjang */
+        .kop-surat { 
+            border-bottom: 3px double #000; 
+            padding-bottom: 5px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            position: relative; 
+        }
+        .logo-kejaksaan { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            width: 80px; 
+        }
+        .header-text h2 { 
+            margin: 0; 
+            font-size: 14pt; 
+            text-transform: uppercase; 
+        }
+        .header-text h1 { 
+            margin: 0; 
+            font-size: 16pt; 
+            text-transform: uppercase; 
+        }
+        .header-text p { 
+            margin: 0; 
+            font-size: 10pt; 
+            font-style: italic; 
+        }
+        
+        /* Judul Dokumen */
+        .judul-laporan { 
+            text-align: center; 
+            text-decoration: underline; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            text-transform: uppercase; 
+            font-size: 12pt; 
+        }
+
+        /* Ringkasan Data */
+        .summary-box {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #000;
+            width: 50%;
+        }
+        .summary-box td {
+            font-size: 11pt;
+            padding: 2px 5px;
+        }
+        
+        /* Tabel Data Formal */
+        .tabel-resmi { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+        .tabel-resmi th { 
+            background-color: #f2f2f2; 
+            border: 1px solid #000; 
+            padding: 10px; 
+            font-size: 10pt; 
+            text-transform: uppercase; 
+        }
+        .tabel-resmi td { 
+            border: 1px solid #000; 
+            padding: 10px; 
+            font-size: 10pt; 
+            vertical-align: top; 
+        }
+        
+        /* Bagian Tanda Tangan */
+        .footer { 
+            margin-top: 30px; 
+        }
+        .ttd-box { 
+            float: right; 
+            width: 40%; 
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .clear { 
+            clear: both; 
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h3>KEJAKSAAN NEGERI</h3>
-        <h4>LAPORAN STATISTIK JENIS PERKARA DATUN</h4>
-    </div>
-
-    <div class="box-container" style="text-align: center;">
-        <div class="box">
-            <div class="label">Total Perkara</div>
-            <div class="value">{{ $total }}</div>
-        </div>
-        <div class="box" style="margin-left: 20px;">
-            <div class="label">Perdata</div>
-            <div class="value">{{ $perdata }}</div>
-        </div>
-        <div class="box" style="margin-left: 20px;">
-            <div class="label">TUN</div>
-            <div class="value">{{ $tun }}</div>
+    {{-- KOP SURAT STANDAR KEJAKSAAN --}}
+    <div class="kop-surat">
+        <img src="{{ public_path('img/logo jaksa.png') }}" class="logo-kejaksaan">
+        <div class="header-text">
+            <h2>KEJAKSAAN AGUNG REPUBLIK INDONESIA</h2>
+            <h1>KEJAKSAAN NEGERI BANJARMASIN</h1>
+            <p>Jl. Adhyaksa No.1, Kayu Tangi, Kec. Banjarmasin Utara, Kota Banjarmasin</p>
         </div>
     </div>
 
-    <h4>Rincian Berdasarkan Jenis:</h4>
-    <table>
+    <div class="judul-laporan">LAPORAN STATISTIK PERDATA DAN TATA USAHA NEGARA</div>
+
+    {{-- RINGKASAN DATA STATISTIK --}}
+    <div class="summary-box">
+        <table>
+            <tr>
+                <td width="150">Total Seluruh Perkara</td>
+                <td>:</td>
+                <td><strong>{{ $total }} Perkara</strong></td>
+            </tr>
+            <tr>
+                <td>Perkara Perdata</td>
+                <td>:</td>
+                <td>{{ $perdata }} Perkara</td>
+            </tr>
+            <tr>
+                <td>Perkara T.U.N</td>
+                <td>:</td>
+                <td>{{ $tun }} Perkara</td>
+            </tr>
+        </table>
+    </div>
+
+    {{-- TABEL RINCIAN PERKARA --}}
+    <table class="tabel-resmi">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Nomor Perkara</th>
-                <th>Jenis Perkara</th>
-                <th>Status Akhir</th>
+                <th width="5%">No</th>
+                <th width="25%">Nomor Perkara</th>
+                <th width="15%">Jenis</th>
+                <th width="35%">Para Pihak</th>
+                <th width="20%">Status Akhir</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($daftar_perkara as $index => $item)
+            @forelse($daftar_perkara as $index => $p)
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->nomor_perkara }}</td>
-                <td>{{ $item->jenis_perkara }}</td>
-                <td>{{ $item->status_akhir }}</td>
+                <td align="center">{{ $index + 1 }}</td>
+                <td>{{ $p->nomor_perkara }}</td>
+                <td align="center">{{ $p->jenis_perkara }}</td>
+                <td>
+                    <strong>P:</strong> {{ $p->penggugat }}<br>
+                    <strong>T:</strong> {{ $p->tergugat }}
+                </td>
+                <td align="center">{{ strtoupper($p->status_akhir) }}</td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="5" align="center"><em>Belum ada data perkara terdaftar.</em></td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 
+    {{-- PENUTUP LAPORAN --}}
     <div class="footer">
-        <p>Dicetak oleh: {{ Auth::user()->name }}</p>
-        <p>Tanggal: {{ date('d F Y') }}</p>
+        <div class="ttd-box">
+            <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p>Petugas Administrasi Datun,</p>
+            <br><br><br>
+            <p><strong>{{ auth()->user()->name }}</strong></p>
+            <p>NIP. {{ auth()->user()->nip ?? '..........................' }}</p>
+        </div>
+        <div class="clear"></div>
     </div>
 </body>
 </html>

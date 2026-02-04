@@ -10,14 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('users', function (Blueprint $table) {
+{
+    Schema::create('users', function (Blueprint $table) {
         $table->id();
         $table->string('name');
-        $table->string('email')->unique();
+        // GANTI email MENJADI nip
+        $table->string('nip')->unique(); 
         $table->timestamp('email_verified_at')->nullable();
         $table->string('password');
-        // TAMBAHKAN BARIS INI:
+        // Role tetap admin atau pimpinan
         $table->enum('role', ['admin', 'pimpinan'])->default('admin'); 
         $table->rememberToken();
         $table->timestamps();

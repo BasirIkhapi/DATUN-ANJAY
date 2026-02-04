@@ -2,31 +2,28 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Jalankan database seeder untuk membuat akun awal.
-     */
     public function run(): void
     {
-        // Membuat akun Admin
+        // SEEDER UNTUK ADMIN
         User::create([
-            'name' => 'Basir Ikhapi',
-            'email' => 'admin@gmail.com',
+            'name'     => 'Basir Ikhapi',
+            'nip'      => '123456789', // Ganti email menjadi NIP di sini
             'password' => Hash::make('password'),
-            'role' => 'admin',
+            'role'     => 'admin',
         ]);
 
-        // Membuat akun Pimpinan
+        // SEEDER UNTUK PIMPINAN
         User::create([
-            'name' => 'Kasi Datun',
-            'email' => 'pimpinan@gmail.com',
+            'name'     => 'Pimpinan Datun',
+            'nip'      => '987654321', // Gunakan NIP unik
             'password' => Hash::make('password'),
-            'role' => 'pimpinan',
+            'role'     => 'pimpinan',
         ]);
     }
 }

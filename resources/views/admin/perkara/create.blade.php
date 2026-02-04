@@ -45,14 +45,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nomor Registrasi Perkara</label>
+                            {{-- DISESUAIKAN: h-16 dan font 13px --}}
                             <input type="text" name="nomor_perkara" value="{{ old('nomor_perkara') }}" required 
                                 placeholder="Contoh: 01/Pdt.G/2026/PN Bjm" 
-                                class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm uppercase placeholder:text-gray-300">
+                                class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner"
+                                style="font-size: 13px; letter-spacing: 0px;">
                         </div>
                         
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Jaksa Pengacara Negara (JPN)</label>
-                            <select name="jaksa_id" required class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm">
+                            {{-- DISESUAIKAN: h-16 dan font 13px --}}
+                            <select name="jaksa_id" required class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner" style="font-size: 13px;">
                                 <option value="">Pilih Jaksa Pendamping...</option>
                                 @foreach($jaksas as $jaksa)
                                     <option value="{{ $jaksa->id }}" {{ old('jaksa_id') == $jaksa->id ? 'selected' : '' }}>
@@ -68,25 +71,30 @@
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Pihak Penggugat
                             </label>
+                            {{-- DISESUAIKAN: h-16, font 13px, dan tanpa paksaan uppercase --}}
                             <input type="text" name="penggugat" value="{{ old('penggugat') }}" required 
                                 placeholder="Nama Instansi/Perorangan"
-                                class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm uppercase placeholder:text-gray-300">
+                                class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner"
+                                style="font-size: 13px; letter-spacing: 0px;">
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                 <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Pihak Tergugat
                             </label>
+                            {{-- DISESUAIKAN: h-16, font 13px, dan tanpa paksaan uppercase --}}
                             <input type="text" name="tergugat" value="{{ old('tergugat') }}" required 
                                 placeholder="Nama Instansi/Perorangan"
-                                class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm uppercase placeholder:text-gray-300">
+                                class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner"
+                                style="font-size: 13px; letter-spacing: 0px;">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Klasifikasi Jenis Perkara</label>
-                            <select name="jenis_perkara" required class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm">
+                            {{-- DISESUAIKAN: h-16 dan font 13px --}}
+                            <select name="jenis_perkara" required class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner" style="font-size: 13px;">
                                 <option value="PERDATA" {{ old('jenis_perkara') == 'PERDATA' ? 'selected' : '' }}>PERDATA</option>
                                 <option value="TATA USAHA NEGARA" {{ old('jenis_perkara') == 'TATA USAHA NEGARA' ? 'selected' : '' }}>TATA USAHA NEGARA</option>
                             </select>
@@ -94,14 +102,16 @@
                         
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tanggal Masuk Berkas</label>
+                            {{-- DISESUAIKAN: h-16 dan font 13px --}}
                             <input type="date" name="tanggal_masuk" value="{{ old('tanggal_masuk', date('Y-m-d')) }}" required 
-                                class="w-full px-6 py-4 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none text-sm">
+                                class="w-full h-16 px-8 bg-gray-50 border-gray-100 border-2 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-gray-700 transition-all outline-none shadow-inner"
+                                style="font-size: 13px;">
                         </div>
                     </div>
 
                     <div class="pt-6">
-                        <button type="submit" class="w-full py-5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-emerald-100 hover:shadow-emerald-200 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="submit" class="w-full h-20 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-[2rem] shadow-xl shadow-emerald-100 hover:shadow-emerald-200 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
+                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                             </svg>
                             SIMPAN PERKARA

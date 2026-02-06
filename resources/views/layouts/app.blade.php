@@ -9,6 +9,8 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,900&display=swap" rel="stylesheet" />
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -38,5 +40,49 @@
                 </p>
             </footer>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            // Efek Notifikasi Sukses
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'BERHASIL',
+                    text: "{{ session('success') }}",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    iconColor: '#10b981',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp animate__faster'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutDown animate__faster'
+                    },
+                    customClass: {
+                        popup: 'rounded-[2rem] border-none shadow-2xl',
+                        title: 'font-black tracking-tighter italic',
+                        htmlContainer: 'font-bold text-slate-500 uppercase text-[10px] tracking-widest'
+                    }
+                });
+            @endif
+
+            // Efek Notifikasi Error (Jika ada validasi gagal)
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'OOPS...',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#0f172a',
+                    customClass: {
+                        popup: 'rounded-[2rem]',
+                        title: 'font-black tracking-tighter italic'
+                    }
+                });
+            @endif
+        </script>
     </body>
 </html>

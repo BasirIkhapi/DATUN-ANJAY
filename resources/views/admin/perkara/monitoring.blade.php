@@ -32,7 +32,7 @@
                                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
                                     Cetak Rekap Periode
                                 </button>
-                                <a href="#" class="flex items-center gap-3 px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest hover:bg-emerald-50 hover:text-emerald-600 transition-all border-t border-slate-50">
+                                <a href="{{ route('perkara.arsip') }}" class="flex items-center gap-3 px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest hover:bg-emerald-50 hover:text-emerald-600 transition-all border-t border-slate-50">
                                     <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                                     Arsip Perkara Selesai
                                 </a>
@@ -46,6 +46,7 @@
                         </a>
                     @endif
                 @else
+                    {{-- TOMBOL CETAK DETAIL --}}
                     <a href="{{ route('perkara.cetakDetail', $perkara->id) }}" target="_blank" class="group flex items-center gap-3 bg-white border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white font-black py-3 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-rose-100 uppercase text-[10px] tracking-widest active:scale-95">
                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         <span>Cetak Progres</span>
@@ -60,10 +61,6 @@
                             </button>
                         </form>
                     @endif
-
-                    <a href="{{ route('dashboard') }}" class="bg-white border border-slate-200 text-slate-600 font-black py-3 px-8 rounded-2xl text-[10px] tracking-widest uppercase hover:bg-slate-50 transition-all shadow-sm">
-                        Kembali
-                    </a>
                 @endif
             </div>
         </div>
@@ -71,7 +68,7 @@
 
     <div class="py-12 bg-[#fcfdfe] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-10">
-
+            
             {{-- TAMPILAN 1: TABEL DAFTAR --}}
             @if(isset($perkaras))
                 <div class="bg-white rounded-[4rem] shadow-xl border border-slate-100 overflow-hidden">
@@ -115,75 +112,70 @@
             @else
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-1">
-                        {{-- HANYA ADMIN YANG BISA INPUT PROGRES --}}
-                        @if(Auth::user()->role === 'admin')
-                            <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100 sticky top-10">
-                                <h3 class="text-[10px] font-black text-slate-800 mb-8 uppercase tracking-widest italic border-b pb-4">Input Progres Baru</h3>
-                                @if($perkara->status_akhir === 'Proses')
-                                    <form action="{{ route('perkara.storeTahapan') }}" method="POST" class="space-y-6">
-                                        @csrf
-                                        <input type="hidden" name="perkara_id" value="{{ $perkara->id }}">
-                                        <div class="space-y-2">
-                                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nama Tahapan Sidang</label>
-                                            <input type="text" name="nama_tahapan" required placeholder="Contoh: Sidang Pertama / Jawaban" class="w-full px-6 py-4 bg-slate-50 border-slate-100 border-2 rounded-2xl font-bold text-sm focus:border-emerald-500 outline-none transition-all shadow-inner" style="font-size: 13px;">
-                                        </div>
-                                        <div class="space-y-2">
-                                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Tanggal Kegiatan</label>
-                                            <input type="date" name="tanggal_tahapan" value="{{ date('Y-m-d') }}" required class="w-full px-6 py-4 bg-slate-50 border-slate-100 border-2 rounded-2xl font-bold text-sm focus:border-emerald-500 outline-none transition-all shadow-inner" style="font-size: 13px;">
-                                        </div>
-                                        <div class="space-y-2">
-                                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Keterangan / Hasil Sidang</label>
-                                            <textarea name="keterangan" rows="3" placeholder="Tambahkan ringkasan sidang..." class="w-full px-6 py-4 bg-slate-50 border-slate-100 border-2 rounded-2xl font-bold text-sm focus:border-emerald-500 outline-none transition-all shadow-inner" style="font-size: 13px;"></textarea>
-                                        </div>
-                                        <button type="submit" class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200 active:scale-95">Simpan Tahapan</button>
-                                    </form>
-                                @else
-                                    <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center">
-                                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest leading-none">Perkara Selesai</p>
-                                    </div>
-                                @endif
-                            </div>
-                        @else
-                            {{-- KARTU STATUS PIMPINAN --}}
-                            <div class="bg-slate-900 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden sticky top-10">
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-                                <div class="relative z-10 text-center space-y-6">
-                                    <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-[2rem] flex items-center justify-center mx-auto">
-                                        <svg width="32" height="32" class="text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <h4 class="text-emerald-400 font-black text-[10px] uppercase tracking-[0.4em]">Otoritas Verifikasi</h4>
-                                        <p class="text-white text-sm font-black uppercase tracking-tight italic">Monitoring Pimpinan</p>
-                                    </div>
-                                    <p class="text-white/40 text-[9px] font-medium leading-relaxed uppercase tracking-[0.2em] italic border-t border-white/5 pt-6">Akses pengawasan real-time terhadap integritas tahapan perkara Datun.</p>
+                        <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100 sticky top-10">
+                            <h3 class="text-[10px] font-black text-slate-800 mb-8 uppercase tracking-widest italic border-b pb-4">Info Perkara</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Jaksa JPN</p>
+                                    <p class="text-sm font-bold text-slate-800">{{ $perkara->jaksa->nama_jaksa ?? 'Nama Jaksa Tidak Ada' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Jenis Perkara</p>
+                                    <p class="text-sm font-bold text-slate-800">{{ $perkara->jenis_perkara }}</p>
                                 </div>
                             </div>
-                        @endif
+
+                            {{-- Form Update Progres (Eksklusif Admin) --}}
+                            @if(Auth::user()->role === 'admin' && $perkara->status_akhir === 'Proses')
+                                <div class="mt-10 pt-10 border-t border-slate-100">
+                                    <h4 class="text-[10px] font-black text-emerald-600 mb-6 uppercase tracking-widest italic">Update Progres Baru</h4>
+                                    <form action="{{ route('perkara.storeTahapan') }}" method="POST" class="space-y-4">
+                                        @csrf
+                                        <input type="hidden" name="perkara_id" value="{{ $perkara->id }}">
+                                        
+                                        <div class="space-y-1">
+                                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Nama Tahapan</label>
+                                            <input type="text" name="nama_tahapan" required placeholder="Contoh: Replik / Duplik" class="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl font-bold text-xs focus:ring-2 focus:ring-emerald-500 outline-none shadow-inner">
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Tanggal</label>
+                                            <input type="date" name="tanggal_tahapan" value="{{ date('Y-m-d') }}" required class="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl font-bold text-xs focus:ring-2 focus:ring-emerald-500 outline-none shadow-inner">
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Keterangan</label>
+                                            <textarea name="keterangan" rows="2" placeholder="Hasil/Agenda Sidang..." class="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl font-bold text-xs focus:ring-2 focus:ring-emerald-500 outline-none shadow-inner"></textarea>
+                                        </div>
+
+                                        <button type="submit" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
+                                            Simpan Progres
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- TIMELINE KEGIATAN --}}
                     <div class="lg:col-span-2">
                         <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100 min-h-[600px]">
-                            <h3 class="text-[10px] font-black text-slate-800 mb-12 uppercase tracking-[0.4em] italic border-b pb-4 text-center">Timeline Progres Perkara</h3>
+                            <h3 class="text-[10px] font-black text-slate-800 mb-12 uppercase tracking-[0.4em] italic border-b pb-4 text-center">Timeline Progres</h3>
                             <div class="relative border-l-4 border-emerald-50 ml-6 space-y-12 pb-10 mt-8">
                                 @forelse($perkara->tahapans as $tahap)
                                     <div class="relative pl-12 group">
                                         <div class="absolute -left-[14px] top-0 w-6 h-6 bg-emerald-500 rounded-full border-4 border-white shadow-lg shadow-emerald-200 transition-transform group-hover:scale-125 duration-500"></div>
                                         <div class="bg-slate-50/50 p-8 rounded-[2rem] border border-slate-100 group-hover:bg-white group-hover:shadow-2xl transition-all duration-500">
-                                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                                                <span class="text-[9px] font-black text-emerald-600 uppercase bg-emerald-50 px-4 py-1.5 rounded-xl w-fit">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <span class="text-[9px] font-black text-emerald-600 uppercase bg-emerald-50 px-4 py-1.5 rounded-xl">
                                                     {{ \Carbon\Carbon::parse($tahap->tanggal_tahapan)->translatedFormat('d F Y') }}
                                                 </span>
-                                                <h4 class="font-black text-slate-900 text-sm tracking-tight italic">{{ $tahap->nama_tahapan }}</h4>
                                             </div>
-                                            @if($tahap->keterangan)
-                                                <p class="text-[11px] font-bold text-slate-400 italic mt-2">{{ $tahap->keterangan }}</p>
-                                            @endif
+                                            <h4 class="font-black text-slate-900 text-sm tracking-tight italic">{{ $tahap->nama_tahapan }}</h4>
+                                            <p class="text-[11px] font-bold text-slate-400 italic mt-2">{{ $tahap->keterangan ?? 'Sedang di Proses' }}</p>
                                         </div>
                                     </div>
                                 @empty
                                     <div class="flex flex-col items-center justify-center py-20 opacity-20 text-center">
-                                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-4"><path stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         <p class="text-[10px] font-black uppercase tracking-[0.4em]">Belum ada tahapan perkara terdeteksi</p>
                                     </div>
                                 @endforelse
@@ -192,30 +184,17 @@
                     </div>
                 </div>
             @endif
-
-            {{-- FOOTER IDENTITAS --}}
-            <div class="pt-20 pb-10 flex flex-col items-center gap-6 opacity-30">
-                <div class="flex items-center gap-10">
-                    <div class="h-[1px] w-48 bg-gradient-to-r from-transparent to-slate-400"></div>
-                    <img src="{{ asset('img/logo jaksa.png') }}" class="w-12 h-auto grayscale transition-all duration-700 hover:grayscale-0">
-                    <div class="h-[1px] w-48 bg-gradient-to-l from-transparent to-slate-400"></div>
-                </div>
-                <div class="space-y-2 text-center">
-                    <p class="text-[11px] font-black text-slate-800 uppercase tracking-[1.2em] italic leading-none">Integritas • Profesionalisme • Kejari Banjarmasin</p>
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.5em] mt-2">Sistem Informasi Monitoring - Bidang DATUN Kejaksaan</p>
-                </div>
-            </div>
         </div>
     </div>
 
-    {{-- MODAL CETAK PERIODE [Eksklusif Pimpinan] --}}
+    {{-- MODAL CETAK REKAP (PIMPINAN) --}}
     @if(Auth::user()->role === 'pimpinan')
     <div id="modalCetakPeriode" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
         <div class="bg-white w-full max-w-md rounded-[3rem] shadow-2xl border border-white overflow-hidden relative">
             <div class="p-10 space-y-8 relative z-10">
                 <div class="text-center space-y-2">
                     <h3 class="text-xl font-black text-slate-800 uppercase italic tracking-tighter">Cetak Rekapitulasi</h3>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tentukan Rentang Tanggal Laporan</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Periode Laporan</p>
                 </div>
                 <form action="{{ route('perkara.cetakPeriode') }}" method="GET" target="_blank" class="space-y-6">
                     <div class="space-y-2">

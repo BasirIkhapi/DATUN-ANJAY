@@ -13,29 +13,27 @@ class JaksaController extends Controller
      */
     public function index()
     {
-        // Mengambil data jaksa beserta relasi perkara
+        // Mengambil data jaksa beserta relasi perkara untuk menghitung beban kerja
         $jaksas = Jaksa::with('perkaras')->latest()->get();
-        
-        // Mengarahkan ke folder admin/jaksa sesuai struktur foldermu
         return view('admin.jaksa.index', compact('jaksas'));
     }
 
     /**
-     * Menyimpan Data Jaksa Baru
-     * PERBAIKAN: Menghapus manipulasi strtoupper agar penulisan gelar akademik rapi
+     * Menyimpan Data Jaksa Baru (Versi Tanpa Foto)
      */
     public function store(Request $request)
     {
+        // 1. Validasi Input teks saja
         $request->validate([
             'nama_jaksa' => 'required|string|max:255',
             'nip'        => 'required|string|unique:jaksas,nip',
         ]);
 
+        // 2. Simpan ke Database
         Jaksa::create([
-            // Disimpan sesuai inputan user (mendukung huruf besar-kecil untuk gelar)
             'nama_jaksa'       => $request->nama_jaksa,
             'nip'              => $request->nip,
-            'pangkat_golongan' => '-', 
+            'pangkat_golongan' => '-', // Default value
         ]);
 
         return redirect()->route('jaksa.index')->with('success', 'Personel JPN Berhasil Diregistrasi.');
@@ -47,23 +45,21 @@ class JaksaController extends Controller
     public function destroy($id)
     {
         $jaksa = Jaksa::findOrFail($id);
+
+        // Langsung hapus data karena fitur foto sudah ditiadakan
         $jaksa->delete();
 
-        return redirect()->route('jaksa.index')->with('success', 'Data Personel Telah Berhasil Dihapuskan.');
+        return redirect()->route('jaksa.index')->with('success', 'Data Personel Berhasil Dihapuskan.');
     }
 
     /**
      * Fitur Cetak Daftar Jaksa Berformat PDF
-     * Menggunakan format resmi Kejaksaan Negeri Banjarmasin
      */
     public function cetakJaksa()
     {
-        // Menggunakan withCount agar data total perkara akurat di laporan PDF
         $jaksas = Jaksa::withCount('perkaras')->get();
-
-        // Memanggil file cetak_jaksa_pdf di folder admin/jaksa
         $pdf = Pdf::loadView('admin.jaksa.cetak_jaksa_pdf', compact('jaksas'))
-                ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait');
 
         return $pdf->stream('SIM-DATUN_Daftar_Jaksa_JPN.pdf');
     }

@@ -24,7 +24,11 @@ class PerkaraController extends Controller
      */
     public function show($id)
     {
-        $perkara = Perkara::with(['jaksa', 'tahapans'])->findOrFail($id);
+        // Mengurutkan tahapan dari yang terbaru (desc) agar timeline muncul dari atas ke bawah
+        $perkara = Perkara::with(['jaksa', 'tahapans' => function ($query) {
+            $query->orderBy('tanggal_tahapan', 'desc');
+        }])->findOrFail($id);
+
         return view('admin.perkara.monitoring', compact('perkara'));
     }
 
@@ -37,18 +41,16 @@ class PerkaraController extends Controller
         $namaFileClean = str_replace(['/', '\\'], '-', $perkara->nomor_perkara);
 
         $pdf = Pdf::loadView('admin.perkara.monitoring_pdf', compact('perkara'))
-                  ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait');
 
         return $pdf->stream('Progres_Perkara_' . $namaFileClean . '.pdf');
     }
 
     /**
-     * FITUR BARU: Cetak Laporan Rekapitulasi Berdasarkan Periode (Eksklusif Pimpinan)
-     *
+     * FITUR REKAP: Cetak Laporan Rekapitulasi Berdasarkan Periode
      */
     public function cetakPeriode(Request $request)
     {
-        // Validasi input tanggal
         $request->validate([
             'tgl_mulai'   => 'required|date',
             'tgl_selesai' => 'required|date|after_or_equal:tgl_mulai',
@@ -57,15 +59,13 @@ class PerkaraController extends Controller
         $tgl_mulai = $request->tgl_mulai;
         $tgl_selesai = $request->tgl_selesai;
 
-        // Ambil data perkara dalam rentang tanggal tersebut
         $perkaras = Perkara::with('jaksa')
-                    ->whereBetween('tanggal_masuk', [$tgl_mulai, $tgl_selesai])
-                    ->orderBy('tanggal_masuk', 'asc')
-                    ->get();
+            ->whereBetween('tanggal_masuk', [$tgl_mulai, $tgl_selesai])
+            ->orderBy('tanggal_masuk', 'asc')
+            ->get();
 
-        // Load view PDF khusus rekap
         $pdf = Pdf::loadView('admin.perkara.cetak_rekap_pdf', compact('perkaras', 'tgl_mulai', 'tgl_selesai'))
-                  ->setPaper('a4', 'landscape'); // Landscape agar tabel muat banyak kolom
+            ->setPaper('a4', 'landscape');
 
         return $pdf->stream('Rekap_Laporan_DATUN_' . $tgl_mulai . '_sd_' . $tgl_selesai . '.pdf');
     }
@@ -93,6 +93,10 @@ class PerkaraController extends Controller
         return view('admin.perkara.create', compact('jaksas'));
     }
 
+    /**
+     * Menyimpan Data Perkara Baru
+     * REDIRECT: Diarahkan ke Dashboard Statistik
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -107,13 +111,14 @@ class PerkaraController extends Controller
         Perkara::create([
             'nomor_perkara' => $request->nomor_perkara,
             'jaksa_id'      => $request->jaksa_id,
-            'penggugat'     => $request->penggugat, // Dihapus strtoupper agar fleksibel
-            'tergugat'      => $request->tergugat,   // Dihapus strtoupper agar fleksibel
+            'penggugat'     => $request->penggugat,
+            'tergugat'      => $request->tergugat,
             'jenis_perkara' => $request->jenis_perkara,
             'tanggal_masuk' => $request->tanggal_masuk,
             'status_akhir'  => 'Proses',
         ]);
 
+        // PERUBAHAN: Kembali ke Dashboard agar user bisa melihat update statistik
         return redirect()->route('dashboard')->with('success', 'Data Perkara Berhasil Disimpan!');
     }
 
@@ -125,11 +130,16 @@ class PerkaraController extends Controller
         return redirect()->back()->with('success', 'Status perkara diperbarui ke Selesai.');
     }
 
+    /**
+     * Menghapus Data Perkara
+     * REDIRECT: Kembali ke Dashboard
+     */
     public function destroy($id)
     {
         $perkara = Perkara::findOrFail($id);
         $perkara->delete();
 
+        // PERUBAHAN: Kembali ke Dashboard
         return redirect()->route('dashboard')->with('success', 'Data perkara telah dihapus.');
     }
 
@@ -141,16 +151,16 @@ class PerkaraController extends Controller
         $daftar_perkara = Perkara::with('jaksa')->orderBy('jenis_perkara')->get();
 
         return Pdf::loadView('admin.perkara.statistik_pdf', compact('total', 'perdata', 'tun', 'daftar_perkara'))
-                ->setPaper('a4', 'portrait')
-                ->stream('Laporan_Statistik_Perkara.pdf');
+            ->setPaper('a4', 'portrait')
+            ->stream('Laporan_Statistik_Perkara.pdf');
     }
 
     public function cetakArsip()
     {
         $perkara_selesai = Perkara::with('jaksa')->where('status_akhir', 'Selesai')->get();
-        
+
         return Pdf::loadView('admin.perkara.arsip_pdf', compact('perkara_selesai'))
-                ->setPaper('a4', 'landscape')
-                ->stream('Laporan_Arsip_Selesai.pdf');
+            ->setPaper('a4', 'landscape')
+            ->stream('Laporan_Arsip_Selesai.pdf');
     }
 }

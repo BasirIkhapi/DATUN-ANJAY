@@ -29,38 +29,39 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-[#fcfdfe] min-h-screen relative overflow-hidden">
+    <div class="py-12 bg-[#fcfdfe] min-h-screen relative overflow-hidden text-slate-900">
         {{-- Background Decoration --}}
         <div class="absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
         
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8 relative z-10">
             
-            {{-- FORM REGISTRASI JAKSA BARU --}}
+            {{-- FORM REGISTRASI TANPA FOTO --}}
             @if(Auth::user()->role === 'admin')
-            <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl shadow-slate-200/50 border border-white">
+            <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl shadow-slate-200/50 border border-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-bl-full -mr-10 -mt-10"></div>
+                
                 <div class="flex items-center gap-4 mb-8">
                     <div class="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
                     <h4 class="font-black text-slate-800 uppercase text-xs tracking-[0.3em] italic">Registrasi Personel Baru</h4>
                 </div>
                 
-                <form action="{{ route('jaksa.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                {{-- Form dibuat horizontal dan rapi --}}
+                <form action="{{ route('jaksa.store') }}" method="POST" class="flex flex-col lg:flex-row items-end gap-4">
                     @csrf
-                    <div class="md:col-span-6">
-                        <input type="text" name="nama_jaksa" required 
-                            placeholder="Nama Lengkap Personel (Beserta Gelar)" 
+                    <div class="flex-1 w-full space-y-1">
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Nama Lengkap & Gelar</label>
+                        <input type="text" name="nama_jaksa" required placeholder="Contoh: Basir Ikhapi, S.H., M.H." 
                             class="w-full h-16 px-8 bg-slate-50 border-slate-100 border-2 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none shadow-inner"
-                            style="font-size: 13px; letter-spacing: 0px;">
+                            style="font-size: 13px;">
                     </div>
-                    <div class="md:col-span-4">
-                        {{-- PERBAIKAN: Gaya tulisan dipaksa identik agar serasi --}}
-                        <input type="text" name="nip" required 
-                            placeholder="Nomor Induk Pegawai (NIP)" 
-                            class="w-full h-16 px-8 bg-slate-50 border-slate-100 border-2 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none shadow-inner"
-                            style="font-size: 13px; letter-spacing: 0px; text-transform: none;">
+                    <div class="w-full lg:w-1/3 space-y-1">
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Nomor Induk Pegawai (NIP)</label>
+                        <input type="text" name="nip" required placeholder="Masukkan NIP" 
+                            class="w-full h-16 px-8 bg-slate-50 border-slate-100 border-2 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none shadow-inner uppercase"
+                            style="font-size: 13px;">
                     </div>
-                    <div class="md:col-span-2">
-                        <button type="submit" class="w-full h-16 bg-slate-900 text-white font-black rounded-[1.5rem] shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest"
-                            style="font-size: 11px;">
+                    <div class="w-full lg:w-32 h-16">
+                        <button type="submit" class="w-full h-full bg-slate-900 text-white font-black rounded-[1.5rem] shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest text-[11px]">
                             Simpan
                         </button>
                     </div>
@@ -76,10 +77,6 @@
                         <h4 class="font-black text-slate-800 uppercase text-2xl tracking-tighter italic leading-none">
                             Personel JPN <span class="text-emerald-600 font-black">Aktif</span>
                         </h4>
-                    </div>
-                    <div class="px-6 py-2.5 bg-white rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span class="text-[10px] font-black text-emerald-800 uppercase tracking-widest leading-none">Otoritas Valid</span>
                     </div>
                 </div>
 
@@ -98,7 +95,8 @@
                             <tr class="group hover:bg-emerald-50/30 transition-all duration-500">
                                 <td class="px-10 py-8">
                                     <div class="flex items-center gap-5">
-                                        <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black shadow-lg shadow-emerald-100 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 border border-white/20">
+                                        {{-- KEMBALI KE INISIAL HURUF --}}
+                                        <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black shadow-lg shadow-emerald-100 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 border border-white/20 text-xl italic">
                                             {{ substr($jaksa->nama_jaksa, 0, 1) }}
                                         </div>
                                         <div class="flex flex-col">
@@ -109,25 +107,21 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-10 py-8 text-center">
-                                    <span class="text-xs font-black text-slate-400 tracking-widest group-hover:text-slate-800 transition-colors">
-                                        {{ $jaksa->nip }}
-                                    </span>
+                                <td class="px-10 py-8 text-center font-black text-xs text-slate-400 tracking-widest group-hover:text-slate-800 transition-colors uppercase">
+                                    {{ $jaksa->nip }}
                                 </td>
                                 <td class="px-10 py-8 text-center">
-                                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-slate-50 text-emerald-700 rounded-[1.2rem] font-black text-[11px] uppercase tracking-wider border border-slate-100 shadow-sm group-hover:bg-white group-hover:shadow-emerald-100 transition-all">
+                                    <div class="inline-flex items-center gap-3 px-6 py-2.5 bg-slate-50 text-emerald-700 rounded-2xl font-black text-[11px] uppercase tracking-wider border border-slate-100 group-hover:bg-white transition-all shadow-sm">
                                         <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
                                         {{ $jaksa->perkaras ? $jaksa->perkaras->count() : 0 }} Perkara
                                     </div>
                                 </td>
                                 <td class="px-10 py-8 text-center">
                                     @if(Auth::user()->role === 'admin')
-                                    <button type="button" 
-                                        onclick="confirmDelete('{{ $jaksa->id }}')" 
+                                    <button type="button" onclick="confirmDelete('{{ $jaksa->id }}')" 
                                         class="p-4 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-600 hover:text-white transition-all shadow-lg shadow-rose-100/50 border border-rose-100 active:scale-90" title="Hapus Data">
                                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
-
                                     <form id="delete-form-{{ $jaksa->id }}" action="{{ route('jaksa.destroy', $jaksa->id) }}" method="POST" class="hidden">
                                         @csrf @method('DELETE')
                                     </form>
@@ -135,11 +129,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="4" class="py-40 text-center opacity-30 italic">
-                                    <p class="font-black text-[10px] uppercase tracking-[0.5em]">No Personnel Records Detected</p>
-                                </td>
-                            </tr>
+                            <tr><td colspan="4" class="py-40 text-center opacity-30 italic font-black text-[10px] uppercase tracking-[0.5em]">No Personnel Records Detected</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -171,10 +161,7 @@
                     timer: 2500,
                     timerProgressBar: true,
                     background: '#ffffff',
-                    iconColor: '#10b981',
-                    customClass: {
-                        popup: 'rounded-[3rem] border-4 border-emerald-50 shadow-2xl',
-                    }
+                    customClass: { popup: 'rounded-[3rem] border-4 border-emerald-50 shadow-2xl' }
                 });
             @endif
         });
@@ -189,16 +176,9 @@
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'YA, HAPUS',
                 cancelButtonText: 'BATAL',
-                background: '#ffffff',
-                customClass: {
-                    popup: 'rounded-[2.5rem] border-4 border-slate-50 shadow-2xl',
-                    confirmButton: 'rounded-xl font-black tracking-widest text-xs py-3 px-6',
-                    cancelButton: 'rounded-xl font-black tracking-widest text-xs py-3 px-6'
-                }
+                customClass: { popup: 'rounded-[2.5rem] border-4 border-slate-50 shadow-2xl' }
             }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
+                if (result.isConfirmed) { document.getElementById('delete-form-' + id).submit(); }
             })
         }
     </script>

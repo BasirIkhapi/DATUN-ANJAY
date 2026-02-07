@@ -2,33 +2,41 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
             <div class="flex">
+                {{-- LOGO --}}
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center group transition-all duration-300 p-2 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10 hover:bg-white/20">
                         <x-application-logo />
                     </a>
                 </div>
 
+                {{-- MENU NAVIGASI UTAMA --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-12 sm:flex items-center">
                     
-                    {{-- Dashboard (Dibuat Lebih Besar & Dominan) --}}
+                    {{-- 1. Dashboard --}}
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" 
-                        class="font-black text-[13px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all border-b-2 {{ request()->routeIs('dashboard') ? 'border-white' : 'border-transparent' }}">
+                        class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('dashboard') ? 'border-b-2 border-white' : 'border-none' }}">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- Data Jaksa (Ukuran Seimbang dengan font-black) --}}
+                    {{-- 2. Pantauan Perkara (Menu Baru Mandiri) --}}
+                    <x-nav-link :href="route('perkara.index')" :active="request()->routeIs('perkara.index')" 
+                        class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('perkara.index') ? 'border-b-2 border-white' : 'border-none' }}">
+                        {{ __('Pantauan Perkara') }}
+                    </x-nav-link>
+
+                    {{-- 3. Data Jaksa --}}
                     @if(Auth::user()->role === 'admin')
                         <x-nav-link :href="route('jaksa.index')" :active="request()->routeIs('jaksa.*')" 
-                            class="font-black text-[10px] uppercase tracking-[0.2em] text-white hover:text-white transition-colors border-none">
+                            class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('jaksa.*') ? 'border-b-2 border-white' : 'border-none' }}">
                             {{ __('Data Jaksa') }}
                         </x-nav-link>
                     @endif
 
-                    {{-- Dropdown Laporan & Arsip (Ukuran Seimbang dengan font-black) --}}
+                    {{-- 4. Dropdown Laporan & Arsip --}}
                     <div class="hidden sm:flex sm:items-center">
                         <x-dropdown align="left" width="56">
                             <x-slot name="trigger">
-                                <button class="inline-flex items-center px-1 pt-1 text-[10px] font-black uppercase tracking-[0.2em] text-white hover:text-white focus:outline-none transition duration-150">
+                                <button class="inline-flex items-center px-1 pt-1 text-[11px] font-black uppercase tracking-[0.2em] text-white hover:text-emerald-200 focus:outline-none transition duration-150">
                                     <div>Laporan & Arsip</div>
                                     <div class="ms-2">
                                         <svg class="fill-current h-4 w-4 opacity-60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -40,14 +48,14 @@
 
                             <x-slot name="content">
                                 <div class="p-2 space-y-1">
-                                    <x-dropdown-link :href="route('perkara.statistik')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900">
+                                    <x-dropdown-link :href="route('perkara.statistik')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900 hover:bg-emerald-50">
                                         {{ __('Statistik Perkara') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="route('perkara.arsip')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900">
+                                    <x-dropdown-link :href="route('perkara.arsip')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900 hover:bg-emerald-50">
                                         {{ __('Arsip Selesai') }}
                                     </x-dropdown-link>
                                     <div class="border-t border-emerald-50 my-1"></div>
-                                    <x-dropdown-link :href="route('admin.perkara.rekap')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-red-600 bg-red-50">
+                                    <x-dropdown-link :href="route('admin.perkara.rekap')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-red-600 bg-red-50 hover:bg-red-100">
                                         {{ __('Rekapitulasi PDF') }}
                                     </x-dropdown-link>
                                 </div>
@@ -57,6 +65,7 @@
                 </div>
             </div>
 
+            {{-- USER PROFILE DROPDOWN --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -75,7 +84,7 @@
 
                     <x-slot name="content">
                         <div class="px-4 py-3 text-[9px] font-black text-emerald-900/40 uppercase tracking-[0.2em] border-b border-emerald-50">
-                            Role: {{ Auth::user()->role }}
+                            Otoritas: {{ Auth::user()->role }}
                         </div>
                         <div class="p-2">
                             <x-dropdown-link :href="route('profile.edit')" class="rounded-xl font-bold text-[10px] uppercase tracking-wider text-emerald-900">

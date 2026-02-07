@@ -11,29 +11,32 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class PerkaraController extends Controller
 {
     /**
-     * Menampilkan Daftar Seluruh Perkara (Halaman Tabel Monitoring)
+     * Menampilkan Daftar Seluruh Perkara (Halaman Tabel Utama)
+     * PERBAIKAN: Diarahkan ke file index.blade.php yang baru kita buat
      */
     public function index()
     {
         $perkaras = Perkara::with('jaksa')->latest()->get();
-        return view('admin.perkara.monitoring', compact('perkaras'));
+        // GANTI dari 'admin.perkara.monitoring' ke 'admin.perkara.index'
+        return view('admin.perkara.index', compact('perkaras'));
     }
 
     /**
      * Menampilkan Detail Progres Satu Perkara (Halaman Timeline)
+     * PERBAIKAN: Harus diarahkan ke file monitoring.blade.php (Timeline)
      */
     public function show($id)
     {
-        // Mengurutkan tahapan dari yang terbaru (desc) agar timeline muncul dari atas ke bawah
         $perkara = Perkara::with(['jaksa', 'tahapans' => function ($query) {
             $query->orderBy('tanggal_tahapan', 'desc');
         }])->findOrFail($id);
 
+        // File monitoring.blade.php khusus untuk Timeline Progres
         return view('admin.perkara.monitoring', compact('perkara'));
     }
 
     /**
-     * Fitur: Cetak Progres Perkara Individu (Format PDF)
+     * Fitur: Cetak Progres Perkara Individu
      */
     public function cetakDetail($id)
     {
@@ -47,7 +50,7 @@ class PerkaraController extends Controller
     }
 
     /**
-     * FITUR REKAP: Cetak Laporan Rekapitulasi Berdasarkan Periode
+     * FITUR REKAP: Cetak Periode
      */
     public function cetakPeriode(Request $request)
     {
@@ -71,7 +74,7 @@ class PerkaraController extends Controller
     }
 
     /**
-     * Menyimpan Tahapan/Progres Sidang Baru
+     * Menyimpan Progres Sidang Baru
      */
     public function storeTahapan(Request $request)
     {
@@ -95,7 +98,6 @@ class PerkaraController extends Controller
 
     /**
      * Menyimpan Data Perkara Baru
-     * REDIRECT: Diarahkan ke Dashboard Statistik
      */
     public function store(Request $request)
     {
@@ -118,8 +120,8 @@ class PerkaraController extends Controller
             'status_akhir'  => 'Proses',
         ]);
 
-        // PERUBAHAN: Kembali ke Dashboard agar user bisa melihat update statistik
-        return redirect()->route('dashboard')->with('success', 'Data Perkara Berhasil Disimpan!');
+        // Dialihkan ke Pantauan Perkara agar user bisa melihat hasilnya langsung
+        return redirect()->route('perkara.index')->with('success', 'Data Perkara Berhasil Disimpan!');
     }
 
     public function updateStatus($id)
@@ -132,15 +134,13 @@ class PerkaraController extends Controller
 
     /**
      * Menghapus Data Perkara
-     * REDIRECT: Kembali ke Dashboard
      */
     public function destroy($id)
     {
         $perkara = Perkara::findOrFail($id);
         $perkara->delete();
 
-        // PERUBAHAN: Kembali ke Dashboard
-        return redirect()->route('dashboard')->with('success', 'Data perkara telah dihapus.');
+        return redirect()->route('perkara.index')->with('success', 'Data perkara telah dihapus.');
     }
 
     public function cetakStatistik()

@@ -20,48 +20,43 @@ Route::get('/', function () {
 // Grup Route yang Membutuhkan Login (Auth)
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // --- DASHBOARD UTAMA ---
+    // --- 1. DASHBOARD UTAMA ---
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Rute Cetak Rekapitulasi Umum dari Dashboard
     Route::get('/dashboard/rekap', [DashboardController::class, 'cetakRekap'])->name('admin.perkara.rekap');
 
-    // --- MANAJEMEN PERKARA & MONITORING ---
-    // 1. Halaman Index: Menampilkan Tabel Daftar Semua Perkara
-    Route::get('/perkara/monitoring', [PerkaraController::class, 'index'])->name('perkara.index');
+    // --- 2. MENU PANTAUAN PERKARA (PINDAHAN DARI DASHBOARD) ---
+    Route::prefix('perkara')->group(function () {
+        // Halaman Utama Pantauan Perkara
+        Route::get('/monitoring', [PerkaraController::class, 'index'])->name('perkara.index');
 
-    // 2. Halaman Show: Menampilkan Detail & Timeline Individu
-    Route::get('/perkara/monitoring/{id}', [PerkaraController::class, 'show'])->name('perkara.show');
+        // Detail & Timeline Individu
+        Route::get('/monitoring/{id}', [PerkaraController::class, 'show'])->name('perkara.show');
 
-    // 3. FITUR CETAK (Penting untuk Role Pimpinan)
-    // Rute untuk cetak detail satu perkara
-    Route::get('/perkara/monitoring/{id}/cetak', [PerkaraController::class, 'cetakDetail'])->name('perkara.cetakDetail');
+        // Form Tambah Perkara Baru
+        Route::get('/create', [PerkaraController::class, 'create'])->name('perkara.create');
+        Route::post('/store', [PerkaraController::class, 'store'])->name('perkara.store');
 
-    // PERBAIKAN: Menambahkan route cetakPeriode yang tadi Error
-    Route::get('/perkara/cetak-periode', [PerkaraController::class, 'cetakPeriode'])->name('perkara.cetakPeriode');
+        // Update Status, Tahapan (Timeline), & Hapus Data
+        Route::patch('/{id}/status', [PerkaraController::class, 'updateStatus'])->name('perkara.updateStatus');
+        Route::post('/tahapan', [PerkaraController::class, 'storeTahapan'])->name('perkara.storeTahapan');
+        Route::delete('/{id}', [PerkaraController::class, 'destroy'])->name('perkara.destroy');
 
-    // 4. Tambah Data Perkara Baru
-    Route::get('/perkara/create', [PerkaraController::class, 'create'])->name('perkara.create');
-    Route::post('/perkara/store', [PerkaraController::class, 'store'])->name('perkara.store');
+        // FITUR CETAK & LAPORAN
+        Route::get('/monitoring/{id}/cetak', [PerkaraController::class, 'cetakDetail'])->name('perkara.cetakDetail');
+        Route::get('/cetak-periode', [PerkaraController::class, 'cetakPeriode'])->name('perkara.cetakPeriode');
+        Route::get('/statistik/cetak', [PerkaraController::class, 'cetakStatistik'])->name('perkara.statistik');
+        Route::get('/arsip/cetak', [PerkaraController::class, 'cetakArsip'])->name('perkara.arsip');
+    });
 
-    // 5. Update Status & Hapus Data
-    Route::patch('/perkara/{id}/status', [PerkaraController::class, 'updateStatus'])->name('perkara.updateStatus');
-    Route::delete('/perkara/{id}', [PerkaraController::class, 'destroy'])->name('perkara.destroy');
+    // --- 3. MANAJEMEN JAKSA (JPN) ---
+    Route::prefix('jaksa')->group(function () {
+        Route::get('/', [JaksaController::class, 'index'])->name('jaksa.index');
+        Route::post('/store', [JaksaController::class, 'store'])->name('jaksa.store');
+        Route::get('/cetak', [JaksaController::class, 'cetakJaksa'])->name('jaksa.cetak');
+        Route::delete('/{id}', [JaksaController::class, 'destroy'])->name('jaksa.destroy');
+    });
 
-    // --- TAHAPAN PERKARA (TIMELINE) ---
-    Route::post('/perkara/tahapan', [PerkaraController::class, 'storeTahapan'])->name('perkara.storeTahapan');
-
-    // --- LAPORAN STATISTIK & ARSIP ---
-    Route::get('/perkara/statistik/cetak', [PerkaraController::class, 'cetakStatistik'])->name('perkara.statistik');
-    Route::get('/perkara/arsip/cetak', [PerkaraController::class, 'cetakArsip'])->name('perkara.arsip');
-
-    // --- MANAJEMEN JAKSA (JPN) ---
-    Route::get('/jaksa', [JaksaController::class, 'index'])->name('jaksa.index');
-    Route::post('/jaksa/store', [JaksaController::class, 'store'])->name('jaksa.store');
-    Route::get('/jaksa/cetak', [JaksaController::class, 'cetakJaksa'])->name('jaksa.cetak');
-    Route::delete('/jaksa/{id}', [JaksaController::class, 'destroy'])->name('jaksa.destroy');
-
-    // --- PROFIL USER ---
+    // --- 4. PROFIL USER ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

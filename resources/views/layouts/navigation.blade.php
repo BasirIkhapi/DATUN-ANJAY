@@ -5,11 +5,11 @@
                 {{-- LOGO --}}
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center group transition-all duration-300 p-2 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10 hover:bg-white/20">
-                        <x-application-logo />
+                        <x-application-logo class="block h-9 w-auto fill-current text-white" />
                     </a>
                 </div>
 
-                {{-- MENU NAVIGASI UTAMA --}}
+                {{-- MENU NAVIGASI UTAMA (URUTAN DISESUAIKAN) --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-12 sm:flex items-center">
                     
                     {{-- 1. Dashboard --}}
@@ -18,13 +18,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- 2. Pantauan Perkara (Menu Baru Mandiri) --}}
-                    <x-nav-link :href="route('perkara.index')" :active="request()->routeIs('perkara.index')" 
-                        class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('perkara.index') ? 'border-b-2 border-white' : 'border-none' }}">
-                        {{ __('Pantauan Perkara') }}
-                    </x-nav-link>
-
-                    {{-- 3. Data Jaksa --}}
+                    {{-- 2. Data Jaksa (Sekarang di Urutan Kedua) --}}
                     @if(Auth::user()->role === 'admin')
                         <x-nav-link :href="route('jaksa.index')" :active="request()->routeIs('jaksa.*')" 
                             class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('jaksa.*') ? 'border-b-2 border-white' : 'border-none' }}">
@@ -32,36 +26,17 @@
                         </x-nav-link>
                     @endif
 
-                    {{-- 4. Dropdown Laporan & Arsip --}}
-                    <div class="hidden sm:flex sm:items-center">
-                        <x-dropdown align="left" width="56">
-                            <x-slot name="trigger">
-                                <button class="inline-flex items-center px-1 pt-1 text-[11px] font-black uppercase tracking-[0.2em] text-white hover:text-emerald-200 focus:outline-none transition duration-150">
-                                    <div>Laporan & Arsip</div>
-                                    <div class="ms-2">
-                                        <svg class="fill-current h-4 w-4 opacity-60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
+                    {{-- 3. Pantauan Perkara --}}
+                    <x-nav-link :href="route('perkara.index')" :active="request()->routeIs('perkara.index') || (request()->routeIs('perkara.*') && !request()->routeIs('perkara.arsip.*'))" 
+                        class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ (request()->routeIs('perkara.index') || (request()->routeIs('perkara.*') && !request()->routeIs('perkara.arsip.*'))) ? 'border-b-2 border-white' : 'border-none' }}">
+                        {{ __('Pantauan Perkara') }}
+                    </x-nav-link>
 
-                            <x-slot name="content">
-                                <div class="p-2 space-y-1">
-                                    <x-dropdown-link :href="route('perkara.statistik')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900 hover:bg-emerald-50">
-                                        {{ __('Statistik Perkara') }}
-                                    </x-dropdown-link>
-                                    <x-dropdown-link :href="route('perkara.arsip')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-emerald-900 hover:bg-emerald-50">
-                                        {{ __('Arsip Selesai') }}
-                                    </x-dropdown-link>
-                                    <div class="border-t border-emerald-50 my-1"></div>
-                                    <x-dropdown-link :href="route('admin.perkara.rekap')" target="_blank" class="rounded-xl font-black text-[10px] uppercase tracking-wider text-red-600 bg-red-50 hover:bg-red-100">
-                                        {{ __('Rekapitulasi PDF') }}
-                                    </x-dropdown-link>
-                                </div>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
+                    {{-- 4. Pusat & Arsip --}}
+                    <x-nav-link :href="route('perkara.arsip.index')" :active="request()->routeIs('perkara.arsip.*')" 
+                        class="font-black text-[11px] uppercase tracking-[0.2em] text-white hover:text-emerald-200 transition-all {{ request()->routeIs('perkara.arsip.*') ? 'border-b-2 border-white' : 'border-none' }}">
+                        {{ __('Pusat & Arsip') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -74,7 +49,7 @@
                                 <div class="w-2 h-2 bg-emerald-300 rounded-full animate-pulse shadow-[0_0_8px_rgba(110,231,183,0.8)]"></div>
                                 {{ Auth::user()->name }}
                             </div>
-                            <div class="ms-3 opacity-50 group-hover:opacity-100 transition-opacity">
+                            <div class="ms-3 opacity-50 group-hover:opacity-100 transition-opacity text-white">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
@@ -102,6 +77,36 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+
+            {{-- Hamburger (Mobile) --}}
+            <div class="-me-2 flex items-center sm:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-emerald-200 hover:text-white hover:bg-emerald-500 focus:outline-none transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Responsive Navigation Menu (Mobile - URUTAN DISESUAIKAN) --}}
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-emerald-700">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            @if(Auth::user()->role === 'admin')
+                <x-responsive-nav-link :href="route('jaksa.index')" :active="request()->routeIs('jaksa.index')">
+                    {{ __('Data Jaksa') }}
+                </x-responsive-nav-link>
+            @endif
+            <x-responsive-nav-link :href="route('perkara.index')" :active="request()->routeIs('perkara.index')">
+                {{ __('Pantauan Perkara') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('perkara.arsip.index')" :active="request()->routeIs('perkara.arsip.*')">
+                {{ __('Pusat & Arsip') }}
+            </x-responsive-nav-link>
         </div>
     </div>
 </nav>

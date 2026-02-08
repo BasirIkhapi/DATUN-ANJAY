@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Perkara;
-use App\Models\Jaksa; 
+use App\Models\Jaksa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -39,7 +39,7 @@ class DashboardController extends Controller
         ];
 
         // 4. Kirim data ke view dashboard
-        return view('dashboard', $data); 
+        return view('dashboard', $data);
     }
 
     /**
@@ -48,9 +48,9 @@ class DashboardController extends Controller
     public function cetakRekap()
     {
         $semua_perkara = Perkara::with('jaksa')->orderBy('tanggal_masuk', 'desc')->get();
-        
+
         $pdf = Pdf::loadView('admin.perkara.rekap_pdf', compact('semua_perkara'))
-                ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape');
 
         return $pdf->stream('Rekapitulasi_Perkara_DATUN.pdf');
     }

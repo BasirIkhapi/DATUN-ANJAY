@@ -6,9 +6,9 @@
         /* Standar Font Resmi Kejaksaan */
         body { 
             font-family: 'Times New Roman', Times, serif; 
-            font-size: 12pt; 
-            line-height: 1.5; 
-            color: #333; 
+            font-size: 11pt; 
+            line-height: 1.4; 
+            color: #000; 
         }
         
         /* Kop Surat Berjenjang */
@@ -21,23 +21,23 @@
         }
         .logo-kejaksaan { 
             position: absolute; 
-            left: 0; 
+            left: 10px; 
             top: 0; 
-            width: 80px; 
+            width: 70px; 
         }
         .header-text h2 { 
             margin: 0; 
-            font-size: 14pt; 
+            font-size: 13pt; 
             text-transform: uppercase; 
         }
         .header-text h1 { 
             margin: 0; 
-            font-size: 16pt; 
+            font-size: 15pt; 
             text-transform: uppercase; 
         }
         .header-text p { 
             margin: 0; 
-            font-size: 10pt; 
+            font-size: 9pt; 
             font-style: italic; 
         }
         
@@ -60,16 +60,19 @@
         .tabel-resmi th { 
             background-color: #f2f2f2; 
             border: 1px solid #000; 
-            padding: 10px; 
-            font-size: 10pt; 
+            padding: 8px; 
+            font-size: 9pt; 
             text-transform: uppercase; 
         }
         .tabel-resmi td { 
             border: 1px solid #000; 
-            padding: 10px; 
+            padding: 8px; 
             font-size: 10pt; 
-            vertical-align: top; 
+            vertical-align: middle; 
         }
+        
+        .text-center { text-align: center; }
+        .font-bold { font-weight: bold; }
         
         /* Bagian Tanda Tangan */
         .footer { 
@@ -103,22 +106,25 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th>Nama Lengkap Personel</th>
-                <th width="25%">NIP / NRP</th>
-                <th width="20%">Total Perkara</th>
+                <th width="30%">Nama Lengkap Personel</th>
+                <th width="20%">NIP / NRP</th>
+                <th width="25%">Pangkat / Golongan</th>
+                <th width="20%">Total Beban Kerja</th>
             </tr>
         </thead>
         <tbody>
             @forelse($jaksas as $index => $jaksa)
             <tr>
-                <td align="center">{{ $index + 1 }}</td>
+                <td class="text-center">{{ $index + 1 }}</td>
                 <td><strong>{{ strtoupper($jaksa->nama_jaksa) }}</strong></td>
-                <td align="center">{{ $jaksa->nip ?? '-' }}</td>
-                <td align="center">{{ $jaksa->perkaras_count ?? 0 }} Perkara</td>
+                <td class="text-center">{{ $jaksa->nip ?? '-' }}</td>
+                {{-- UPDATE: MENAMPILKAN PANGKAT/GOLONGAN --}}
+                <td class="text-center italic">{{ $jaksa->pangkat_golongan ?? '-' }}</td>
+                <td class="text-center">{{ $jaksa->perkaras_count ?? 0 }} Perkara</td>
             </tr>
             @empty
             <tr>
-                <td colspan="4" align="center"><em>Data personel JPN tidak ditemukan.</em></td>
+                <td colspan="5" class="text-center"><em>Data personel JPN tidak ditemukan.</em></td>
             </tr>
             @endforelse
         </tbody>
@@ -128,10 +134,10 @@
     <div class="footer">
         <div class="ttd-box">
             <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p>Admin SIM-DATUN,</p>
+            <p>Kepala Seksi Perdata dan TUN,</p>
             <br><br><br>
-            <p><strong>{{ auth()->user()->name }}</strong></p>
-            <p>NIP. {{ auth()->user()->nip ?? '..........................' }}</p>
+            <p><strong>......................................................</strong></p>
+            <p>Jaksa Utama Pratama / NIP.</p>
         </div>
         <div class="clear"></div>
     </div>

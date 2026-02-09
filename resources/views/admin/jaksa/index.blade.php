@@ -30,38 +30,53 @@
     </x-slot>
 
     <div class="py-12 bg-[#fcfdfe] min-h-screen relative overflow-hidden text-slate-900">
-        {{-- Background Decoration --}}
         <div class="absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
         
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8 relative z-10">
             
-            {{-- FORM REGISTRASI TANPA FOTO --}}
+            {{-- FORM REGISTRASI DENGAN DROPDOWN OTOMATIS --}}
             @if(Auth::user()->role === 'admin')
             <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl shadow-slate-200/50 border border-white relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-bl-full -mr-10 -mt-10"></div>
                 
                 <div class="flex items-center gap-4 mb-8">
-                    <div class="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
+                    <div class="w-1.5 h-6 bg-emerald-600 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
                     <h4 class="font-black text-slate-800 uppercase text-xs tracking-[0.3em] italic">Registrasi Personel Baru</h4>
                 </div>
                 
-                {{-- Form dibuat horizontal dan rapi --}}
-                <form action="{{ route('jaksa.store') }}" method="POST" class="flex flex-col lg:flex-row items-end gap-4">
+                <form action="{{ route('jaksa.store') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-end">
                     @csrf
-                    <div class="flex-1 w-full space-y-1">
+                    <div class="space-y-1">
                         <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Nama Lengkap & Gelar</label>
-                        <input type="text" name="nama_jaksa" required placeholder="Contoh: Basir Ikhapi, S.H., M.H." 
-                            class="w-full h-16 px-8 bg-slate-50 border-slate-100 border-2 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none shadow-inner"
-                            style="font-size: 13px;">
+                        <input type="text" name="nama_jaksa" required placeholder="MASUKAN NAMA" 
+                            class="w-full h-14 px-6 bg-slate-50 border-slate-100 border-2 rounded-[1.2rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none text-xs">
                     </div>
-                    <div class="w-full lg:w-1/3 space-y-1">
-                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Nomor Induk Pegawai (NIP)</label>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">NIP</label>
                         <input type="text" name="nip" required placeholder="Masukkan NIP" 
-                            class="w-full h-16 px-8 bg-slate-50 border-slate-100 border-2 rounded-[1.5rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none shadow-inner uppercase"
-                            style="font-size: 13px;">
+                            class="w-full h-14 px-6 bg-slate-50 border-slate-100 border-2 rounded-[1.2rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none text-xs uppercase">
                     </div>
-                    <div class="w-full lg:w-32 h-16">
-                        <button type="submit" class="w-full h-full bg-slate-900 text-white font-black rounded-[1.5rem] shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest text-[11px]">
+
+                    {{-- SELECT DROPDOWN PANGKAT/GOLONGAN --}}
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Pangkat / Golongan</label>
+                        <select name="pangkat_golongan" required 
+                            class="w-full h-14 px-6 bg-slate-50 border-slate-100 border-2 rounded-[1.2rem] focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white font-bold text-slate-700 transition-all outline-none text-xs appearance-none cursor-pointer">
+                            <option value="" disabled selected>Pilih Pangkat/Golongan</option>
+                            <option value="Jaksa Utama (IV/e)">Jaksa Utama (IV/e)</option>
+                            <option value="Jaksa Utama Madya (IV/d)">Jaksa Utama Madya (IV/d)</option>
+                            <option value="Jaksa Utama Muda (IV/c)">Jaksa Utama Muda (IV/c)</option>
+                            <option value="Jaksa Utama Pratama (IV/b)">Jaksa Utama Pratama (IV/b)</option>
+                            <option value="Jaksa Madya (IV/a)">Jaksa Madya (IV/a)</option>
+                            <option value="Jaksa Muda (III/d)">Jaksa Muda (III/d)</option>
+                            <option value="Jaksa Pratama (III/c)">Jaksa Pratama (III/c)</option>
+                            <option value="Ajun Jaksa (III/b)">Ajun Jaksa (III/b)</option>
+                            <option value="Ajun Jaksa Madya (III/a)">Ajun Jaksa Madya (III/a)</option>
+                        </select>
+                    </div>
+
+                    <div class="h-14">
+                        <button type="submit" class="w-full h-full bg-slate-900 text-white font-black rounded-[1.2rem] shadow-xl shadow-slate-200 hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest text-[11px]">
                             Simpan
                         </button>
                     </div>
@@ -85,8 +100,8 @@
                         <thead>
                             <tr class="bg-slate-50/50 border-b border-slate-100 uppercase tracking-[0.4em]">
                                 <th class="px-10 py-7 text-[11px] font-black text-slate-400">Profil Jaksa</th>
-                                <th class="px-10 py-7 text-[11px] font-black text-slate-400 text-center">Identitas NIP</th>
-                                <th class="px-10 py-7 text-[11px] font-black text-slate-400 text-center">Beban Perkara</th>
+                                <th class="px-10 py-7 text-[11px] font-black text-slate-400 text-center">Pangkat / Golongan</th>
+                                <th class="px-10 py-7 text-[11px] font-black text-slate-400 text-center">Beban Kerja</th>
                                 <th class="px-10 py-7 text-[11px] font-black text-slate-400 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -95,7 +110,6 @@
                             <tr class="group hover:bg-emerald-50/30 transition-all duration-500">
                                 <td class="px-10 py-8">
                                     <div class="flex items-center gap-5">
-                                        {{-- KEMBALI KE INISIAL HURUF --}}
                                         <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black shadow-lg shadow-emerald-100 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 border border-white/20 text-xl italic">
                                             {{ substr($jaksa->nama_jaksa, 0, 1) }}
                                         </div>
@@ -103,12 +117,12 @@
                                             <span class="font-black text-base text-slate-800 tracking-tight italic leading-tight group-hover:text-emerald-700 transition-colors">
                                                 {{ $jaksa->nama_jaksa }}
                                             </span>
-                                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Jaksa Pengacara Negara</span>
+                                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">NIP. {{ $jaksa->nip }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-10 py-8 text-center font-black text-xs text-slate-400 tracking-widest group-hover:text-slate-800 transition-colors uppercase">
-                                    {{ $jaksa->nip }}
+                                <td class="px-10 py-8 text-center font-bold text-[10px] text-slate-600 uppercase tracking-tighter italic">
+                                    {{ $jaksa->pangkat_golongan ?? 'Belum Diatur' }}
                                 </td>
                                 <td class="px-10 py-8 text-center">
                                     <div class="inline-flex items-center gap-3 px-6 py-2.5 bg-slate-50 text-emerald-700 rounded-2xl font-black text-[11px] uppercase tracking-wider border border-slate-100 group-hover:bg-white transition-all shadow-sm">

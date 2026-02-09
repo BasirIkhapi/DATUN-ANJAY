@@ -1,7 +1,8 @@
 <x-app-layout>
     {{-- HEADER: PANEL KENDALI MODERN --}}
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {{-- Tambahan class: gsap-header --}}
+        <div class="gsap-header flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-0 translate-y-[-20px]">
             <div class="flex items-center gap-6">
                 <div class="relative group">
                     <div class="absolute -inset-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
@@ -37,13 +38,15 @@
     </x-slot>
 
     <div class="py-12 bg-[#fcfdfe] min-h-screen relative overflow-hidden text-slate-900 font-sans antialiased">
-        <div class="absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
+        {{-- Background Blobs Animated with GSAP --}}
+        <div class="gsap-blob absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
         
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-10 relative z-10">
             
             {{-- HERO SECTION --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 relative bg-emerald-900 rounded-[3.5rem] p-12 overflow-hidden shadow-2xl border border-white/10">
+                {{-- Tambahan class: gsap-hero-main --}}
+                <div class="gsap-hero-main lg:col-span-2 relative bg-emerald-900 rounded-[3.5rem] p-12 overflow-hidden shadow-2xl border border-white/10 opacity-0">
                     <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-emerald-400/10 to-transparent opacity-50"></div>
                     <div class="relative z-10 space-y-8">
                         <div class="inline-flex items-center gap-3 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
@@ -61,7 +64,8 @@
                 </div>
 
                 <div class="flex flex-col gap-6">
-                    <div class="flex-1 bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col justify-center items-center text-center group hover:shadow-emerald-200/50 transition-all duration-500">
+                    {{-- Tambahan class: gsap-hero-side --}}
+                    <div class="gsap-hero-side flex-1 bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col justify-center items-center text-center group hover:shadow-emerald-200/50 transition-all duration-500 opacity-0">
                         <div class="w-28 h-28 bg-emerald-600 rounded-[2.5rem] flex flex-col items-center justify-center mb-6 text-white shadow-xl shadow-emerald-200 group-hover:rotate-6 transition-transform">
                             <span class="text-sm font-black uppercase opacity-70">{{ \Carbon\Carbon::now()->translatedFormat('M') }}</span>
                             <span class="text-5xl font-black">{{ \Carbon\Carbon::now()->format('d') }}</span>
@@ -73,7 +77,8 @@
             </div>
 
             {{-- GRID STATISTIK --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {{-- Tambahan class: gsap-stats-container --}}
+            <div class="gsap-stats-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 @php
                     $stats = [
                         ['label' => 'Total Laporan', 'value' => $total_perkara, 'color' => 'bg-rose-500', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2'],
@@ -83,7 +88,8 @@
                     ];
                 @endphp
                 @foreach($stats as $stat)
-                <div class="bg-white p-8 rounded-[3rem] shadow-xl border border-slate-50 relative overflow-hidden group hover:-translate-y-2 transition-all duration-500">
+                {{-- Tambahan class: gsap-stat-card --}}
+                <div class="gsap-stat-card bg-white p-8 rounded-[3rem] shadow-xl border border-slate-50 relative overflow-hidden group hover:-translate-y-2 transition-all duration-500 opacity-0">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -z-10 group-hover:scale-150 transition-transform duration-700"></div>
                     <div class="flex justify-between items-start mb-4">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $stat['label'] }}</p>
@@ -98,7 +104,8 @@
             {{-- DUA KOLOM INSIGHTS (AGENDA & PERSONEL) --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- 1. AGENDA TAHAPAN TERDEKAT --}}
-                <div class="lg:col-span-2 bg-white rounded-[3.5rem] p-10 shadow-2xl border border-slate-100 flex flex-col relative overflow-hidden group">
+                {{-- Tambahan class: gsap-col-left --}}
+                <div class="gsap-col-left lg:col-span-2 bg-white rounded-[3.5rem] p-10 shadow-2xl border border-slate-100 flex flex-col relative overflow-hidden group opacity-0">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 opacity-50"></div>
                     
                     <div class="flex items-center justify-between mb-10 relative z-10">
@@ -115,7 +122,8 @@
                         @endphp
 
                         @forelse($agenda_terkini as $agenda)
-                        <div class="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:bg-white transition-all duration-500 group/item">
+                        {{-- Tambahan class: gsap-agenda-item --}}
+                        <div class="gsap-agenda-item flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:bg-white transition-all duration-500 group/item">
                             <div class="flex flex-col items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-colors">
                                 <span class="text-[10px] font-black uppercase leading-none mb-1">{{ \Carbon\Carbon::parse($agenda->tanggal_tahapan)->translatedFormat('M') }}</span>
                                 <span class="text-xl font-black leading-none">{{ \Carbon\Carbon::parse($agenda->tanggal_tahapan)->format('d') }}</span>
@@ -144,7 +152,8 @@
                 </div>
 
                 {{-- 2. PERSONEL JPN TERAKTIF --}}
-                <div class="bg-slate-900 rounded-[3.5rem] p-10 shadow-2xl text-white flex flex-col justify-between relative overflow-hidden group">
+                {{-- Tambahan class: gsap-col-right --}}
+                <div class="gsap-col-right bg-slate-900 rounded-[3.5rem] p-10 shadow-2xl text-white flex flex-col justify-between relative overflow-hidden group opacity-0">
                     <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-emerald-500/10 to-transparent opacity-30"></div>
                     <div class="relative z-10">
                         <div class="flex items-center gap-4 mb-10">
@@ -184,7 +193,8 @@
             </div>
 
             {{-- FOOTER IDENTITAS --}}
-            <div class="pt-20 pb-10 flex flex-col items-center gap-8 opacity-40 group">
+            {{-- Tambahan class: gsap-footer --}}
+            <div class="gsap-footer pt-20 pb-10 flex flex-col items-center gap-8 opacity-40 group opacity-0">
                 <div class="flex items-center gap-10">
                     <div class="h-[1px] w-48 bg-gradient-to-r from-transparent via-emerald-400 to-transparent group-hover:w-64 transition-all duration-1000"></div>
                     <img src="{{ asset('img/logo jaksa.png') }}" class="w-12 h-auto grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
@@ -194,4 +204,118 @@
             </div>
         </div>
     </div>
+
+    {{-- GSAP INTEGRATION SECTION --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // 1. Initial Load Timeline (Header & Hero)
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+            tl.to(".gsap-header", { 
+                y: 0, 
+                opacity: 1, 
+                duration: 1 
+            })
+            .to(".gsap-hero-main", { 
+                x: 0, 
+                opacity: 1, 
+                duration: 1.2,
+                from: { x: -50 } // Menentukan nilai awal di sini agar CSS tidak 'flashing'
+            }, "-=0.6")
+            .to(".gsap-hero-side", { 
+                x: 0, 
+                opacity: 1, 
+                duration: 1.2,
+                from: { x: 50 }
+            }, "-=1");
+
+            // 2. Stats Grid (Staggered Animation saat scroll)
+            gsap.fromTo(".gsap-stat-card", 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: "back.out(1.2)",
+                    scrollTrigger: {
+                        trigger: ".gsap-stats-container",
+                        start: "top 85%", // Mulai animasi saat bagian atas elemen mencapai 85% viewport
+                    }
+                }
+            );
+
+            // 3. Kolom Kiri & Kanan Bawah
+            gsap.fromTo(".gsap-col-left", 
+                { y: 60, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".gsap-col-left",
+                        start: "top 85%",
+                    }
+                }
+            );
+
+            gsap.fromTo(".gsap-col-right", 
+                { y: 80, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    delay: 0.2, // Sedikit delay agar tidak muncul bersamaan persis dengan kiri
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".gsap-col-right",
+                        start: "top 85%",
+                    }
+                }
+            );
+
+            // 4. Agenda Items (Cascading effect didalam card)
+            gsap.fromTo(".gsap-agenda-item", 
+                { x: -20, opacity: 0 },
+                {
+                    x: 0,
+                    opacity: 1,
+                    duration: 0.5,
+                    stagger: 0.1,
+                    delay: 0.5,
+                    scrollTrigger: {
+                        trigger: ".gsap-col-left",
+                        start: "top 70%",
+                    }
+                }
+            );
+
+            // 5. Background Blob Floating (Continuous)
+            gsap.to(".gsap-blob", {
+                y: "-20%",
+                x: "20%",
+                duration: 8,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // 6. Footer Fade In
+            gsap.to(".gsap-footer", {
+                opacity: 0.4, // Sesuai class asli opacity-40
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: ".gsap-footer",
+                    start: "top 95%",
+                }
+            });
+        });
+    </script>
 </x-app-layout>

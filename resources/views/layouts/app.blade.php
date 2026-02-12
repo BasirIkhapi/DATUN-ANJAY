@@ -7,8 +7,9 @@
 
         <title>SIM-DATUN | Kejaksaan Negeri Banjarmasin</title>
 
+        {{-- PERBAIKAN: Menghapus karakter '>' yang nyasar --}}
         <link rel="icon" type="image/png" href="{{ asset('img/logo jaksa.png') }}">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">>
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
@@ -16,6 +17,7 @@
     </head>
     <body class="font-sans antialiased text-gray-900 bg-gray-50/50 selection:bg-emerald-100 selection:text-emerald-900">
         <div class="min-h-screen relative">
+            {{-- Efek Gradient Background --}}
             <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-emerald-500/5 to-transparent -z-10 pointer-events-none"></div>
 
             @include('layouts.navigation')
@@ -36,15 +38,15 @@
 
             <footer class="py-10 text-center">
                 <p class="text-[9px] font-black text-gray-300 uppercase tracking-[0.5em] italic">
-                    Sistem Informasi Monitoring - Bidang DATUN Kejaksaan
+                    Sistem Informasi Monitoring - Bidang DATUN Kejaksaan Negeri Banjarmasin
                 </p>
             </footer>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        {{-- SweetAlert2 Logic --}}
         <script>
-            // Efek Notifikasi Sukses
             @if(session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -70,7 +72,6 @@
                 });
             @endif
 
-            // Efek Notifikasi Error (Jika ada validasi gagal)
             @if(session('error'))
                 Swal.fire({
                     icon: 'error',

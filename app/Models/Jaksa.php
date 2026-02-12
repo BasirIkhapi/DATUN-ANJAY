@@ -4,35 +4,38 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Jaksa extends Model
 {
     use HasFactory;
 
-    // Menentukan kolom yang boleh diisi (Mass Assignment)
-    // Tambahkan 'nip' dan 'nama_jaksa' sesuai kebutuhan form kamu
+    /**
+     * Kolom yang dapat diisi secara massal.
+     * Pastikan nama kolom ini sama persis dengan migration (nip, nama_jaksa, pangkat_golongan).
+     */
     protected $fillable = [
-        'nip', 
-        'nama_jaksa', 
-        'pangkat_golongan'
+        'nip',
+        'nama_jaksa',
+        'pangkat_golongan',
     ];
 
     /**
-     * Relasi ke Model Perkara
-     * Penamaan 'perkaras' (jamak) karena satu jaksa menangani banyak perkara
+     * Relasi ke Model Perkara (One-to-Many).
+     * Digunakan untuk menghitung beban kerja: $jaksa->perkaras->count()
      */
-    public function perkaras()
+    public function perkaras(): HasMany
     {
-        // Menentukan foreign key 'jaksa_id' secara eksplisit agar relasi tidak null
+        // 'jaksa_id' adalah kolom di tabel perkaras yang menyimpan ID dari tabel jaksas
         return $this->hasMany(Perkara::class, 'jaksa_id');
     }
 
     /**
-     * Relasi Cadangan (Opsional)
-     * Jika di kodingan Blade/Controller kamu terlanjur memanggil 'perkara' tanpa 's'
+     * Helper: Mendapatkan inisial nama untuk avatar di tabel.
+     * Contoh: "Ahmad" menjadi "A"
      */
-    public function perkara()
+    public function getInisialAttribute(): string
     {
-        return $this->hasMany(Perkara::class, 'jaksa_id');
+        return strtoupper(substr($this->nama_jaksa, 0, 1));
     }
 }

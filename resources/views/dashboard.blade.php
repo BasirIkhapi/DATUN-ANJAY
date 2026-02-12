@@ -1,319 +1,236 @@
 <x-app-layout>
+    {{-- CSS Khusus untuk Visual Premium --}}
+    <style>
+        [x-cloak] { display: none !important; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .stat-glow:hover { box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.2); transform: translateY(-5px); }
+        .bg-pattern { background-image: radial-gradient(#10b981 0.5px, transparent 0.5px); background-size: 24px 24px; opacity: 0.1; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    </style>
+
     {{-- HEADER: PANEL KENDALI MODERN --}}
     <x-slot name="header">
-        {{-- Tambahan class: gsap-header --}}
-        <div class="gsap-header flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-0 translate-y-[-20px]">
-            <div class="flex items-center gap-6">
-                <div class="relative group">
-                    <div class="absolute -inset-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
-                    <div class="relative p-4 bg-white rounded-2xl shadow-sm border border-emerald-50 flex items-center">
-                        <svg width="28" height="28" class="text-emerald-600 transform group-hover:scale-110 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                    </div>
+        <div class="gsap-reveal flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-0 translate-y-[-20px]">
+            <div class="flex items-center gap-6 text-left">
+                <div class="relative p-2 bg-white rounded-2xl shadow-sm border border-emerald-50 transition-all duration-500 hover:rotate-12 hover:scale-110">
+                    <img src="{{ asset('img/logo jaksa.png') }}" alt="Logo" class="w-12 h-12 object-contain">
                 </div>
+                
                 <div class="space-y-1">
-                    <h2 class="text-2xl font-black text-slate-800 tracking-tighter uppercase leading-none">
-                        DASHBOARD <span class="text-emerald-600 italic">SYSTEM</span>
+                    <h2 class="text-2xl font-black text-slate-800 tracking-tighter uppercase leading-none text-left">
+                        DASHBOARD <span class="text-emerald-600 italic underline decoration-emerald-200 decoration-4 underline-offset-4">SYSTEM</span>
                     </h2>
                     <div class="flex items-center gap-3">
                         <div class="h-[2px] w-8 bg-emerald-500"></div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em]">
-                            {{ Auth::user()->role === 'pimpinan' ? 'Otoritas Pengawas Terpusat' : 'Otoritas Datun Terpusat' }}
+                            {{ Auth::user()->role === 'admin' ? 'Otoritas Datun Terpusat' : 'Akses Operasional Staff' }}
                         </p>
                     </div>
                 </div>
             </div>
             
             <div class="flex items-center gap-4">
-                <div class="px-8 py-3 bg-emerald-50 text-emerald-700 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-emerald-100 flex items-center gap-3 shadow-sm shadow-emerald-100">
+                <div class="px-6 py-3 bg-white text-emerald-700 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-emerald-100 flex items-center gap-3 shadow-sm shadow-emerald-50">
                     <span class="relative flex h-3 w-3">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                     </span>
-                    Sesi Akses Terverifikasi
+                    Waktu Sistem (WITA): <span id="real-time-clock" class="font-mono">00:00:00</span>
                 </div>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-12 bg-[#fcfdfe] min-h-screen relative overflow-hidden text-slate-900 font-sans antialiased">
-        {{-- Background Blobs Animated with GSAP --}}
-        <div class="gsap-blob absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
-        
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-10 relative z-10">
+    <div class="py-6 bg-[#fcfdfe] min-h-screen relative overflow-hidden text-slate-900 font-sans">
+        <div class="absolute inset-0 bg-pattern pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 relative z-10">
             
             {{-- HERO SECTION --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {{-- Tambahan class: gsap-hero-main --}}
-                <div class="gsap-hero-main lg:col-span-2 relative bg-emerald-900 rounded-[3.5rem] p-12 overflow-hidden shadow-2xl border border-white/10 opacity-0">
-                    <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-emerald-400/10 to-transparent opacity-50"></div>
-                    <div class="relative z-10 space-y-8">
-                        <div class="inline-flex items-center gap-3 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                            <span class="text-[10px] font-black text-emerald-100 uppercase tracking-[0.5em]">Sinkronisasi Data Terpadu</span>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="gsap-reveal lg:col-span-3 relative bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-[3rem] p-10 overflow-hidden shadow-2xl opacity-0 border border-emerald-800 group translate-y-[20px]">
+                    <div class="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px] group-hover:bg-emerald-400/30 transition-all duration-700"></div>
+                    <img src="{{ asset('img/logo jaksa.png') }}" class="absolute -right-8 -bottom-12 w-64 opacity-5 grayscale brightness-200 -rotate-12 pointer-events-none group-hover:scale-110 transition-transform duration-700" alt="">
+
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-10 text-left">
+                        <div class="shrink-0 relative">
+                            <div class="absolute inset-0 bg-white/20 blur-3xl rounded-full"></div>
+                            <img src="{{ asset('img/logo jaksa.png') }}" alt="Logo Kejaksaan" class="w-28 h-28 object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                         </div>
-                        <h1 class="text-5xl md:text-7xl font-black text-white leading-none tracking-tighter uppercase italic drop-shadow-2xl">
-                            Sistem Informasi<br><span class="text-emerald-400">Monitoring Terintegrasi</span>
-                        </h1>
-                        <p class="text-emerald-100/60 text-sm font-medium tracking-wide max-w-md italic leading-relaxed uppercase">
-                            Manajemen database perkara Perdata dan Tata Usaha Negara pada Kejaksaan Negeri Banjarmasin berbasis akuntabilitas digital.
-                        </p>
+                        <div class="space-y-4">
+                            <div class="space-y-1 text-left">
+                                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.5em] mb-3 border-l-2 border-emerald-500 pl-3">Kejaksaan Negeri Banjarmasin</p>
+                                <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter uppercase italic">Sistem Informasi<br><span class="text-emerald-400 italic">Monitoring Datun</span></h1>
+                            </div>
+                            <p class="text-emerald-100/60 text-[11px] font-bold tracking-widest uppercase italic">Selamat Datang Kembali, <span class="text-white underline underline-offset-4 decoration-emerald-500">{{ Auth::user()->name }}</span></p>
+                        </div>
                     </div>
-                    <img src="{{ asset('img/logo jaksa.png') }}" class="absolute -right-10 -bottom-10 w-96 h-auto opacity-10 grayscale brightness-200 -rotate-12 pointer-events-none">
                 </div>
 
-                <div class="flex flex-col gap-6">
-                    {{-- Tambahan class: gsap-hero-side --}}
-                    <div class="gsap-hero-side flex-1 bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col justify-center items-center text-center group hover:shadow-emerald-200/50 transition-all duration-500 opacity-0">
-                        <div class="w-28 h-28 bg-emerald-600 rounded-[2.5rem] flex flex-col items-center justify-center mb-6 text-white shadow-xl shadow-emerald-200 group-hover:rotate-6 transition-transform">
-                            <span class="text-sm font-black uppercase opacity-70">{{ \Carbon\Carbon::now()->translatedFormat('M') }}</span>
-                            <span class="text-5xl font-black">{{ \Carbon\Carbon::now()->format('d') }}</span>
-                        </div>
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] mb-1">Kalender Operasional</p>
-                        <p class="text-2xl font-black text-slate-800 uppercase tracking-tighter">{{ \Carbon\Carbon::now()->translatedFormat('l') }}</p>
+                <div class="gsap-reveal relative bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col justify-center items-center text-center opacity-0 translate-y-[20px] group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-[2rem] flex flex-col items-center justify-center text-white shadow-xl shadow-emerald-100 mb-5 border-4 border-white group-hover:rotate-6 transition-transform duration-500">
+                        <span class="text-[10px] font-black uppercase opacity-80 mb-0.5">{{ now()->translatedFormat('M') }}</span>
+                        <span class="text-3xl font-black">{{ now()->format('d') }}</span>
                     </div>
+                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter italic">{{ now()->translatedFormat('l') }}</h3>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">Tahun Anggaran {{ now()->format('Y') }}</p>
                 </div>
             </div>
 
             {{-- GRID STATISTIK --}}
-            {{-- Tambahan class: gsap-stats-container --}}
-            <div class="gsap-stats-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 @php
                     $stats = [
-                        ['label' => 'Total Laporan', 'value' => $total_perkara, 'color' => 'bg-rose-500', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2'],
-                        ['label' => 'Sengketa Perdata', 'value' => $perdata, 'color' => 'bg-orange-500', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-                        ['label' => 'Perkara T.U.N', 'value' => $tun, 'color' => 'bg-blue-500', 'icon' => 'M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z'],
-                        ['label' => 'Inkracht Selesai', 'value' => $selesai, 'color' => 'bg-emerald-500', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']
+                        ['label' => 'Total Perkara', 'value' => $total_perkara, 'color' => 'bg-slate-800', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2'],
+                        ['label' => 'Perdata', 'value' => $perdata, 'color' => 'bg-orange-500', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16'],
+                        ['label' => 'T.U.N', 'value' => $tun, 'color' => 'bg-blue-600', 'icon' => 'M3 10h18M3 14h18m-9-4v8'],
+                        ['label' => 'Sedang Proses', 'value' => $proses, 'color' => 'bg-rose-600', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+                        ['label' => 'Selesai', 'value' => $selesai, 'color' => 'bg-emerald-600', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']
                     ];
                 @endphp
+
                 @foreach($stats as $stat)
-                {{-- Tambahan class: gsap-stat-card --}}
-                <div class="gsap-stat-card bg-white p-8 rounded-[3rem] shadow-xl border border-slate-50 relative overflow-hidden group hover:-translate-y-2 transition-all duration-500 opacity-0">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -z-10 group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="gsap-stat-card glass-card p-6 rounded-[2.5rem] shadow-sm opacity-0 scale-90 text-left stat-glow transition-all duration-300">
                     <div class="flex justify-between items-start mb-4">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $stat['label'] }}</p>
-                        <svg width="20" height="20" class="text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="{{ $stat['icon'] }}"/></svg>
+                        <div class="p-2 {{ $stat['color'] }} text-white rounded-xl shadow-lg">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="{{ $stat['icon'] }}"/></svg>
+                        </div>
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none text-right">{{ $stat['label'] }}</p>
                     </div>
-                    <h4 class="text-6xl font-black text-slate-900 tracking-tighter leading-none">{{ $stat['value'] }}</h4>
-                    <div class="mt-8 h-1.5 w-12 {{ $stat['color'] }} rounded-full group-hover:w-full transition-all duration-700"></div>
+                    <h4 class="text-4xl font-black text-slate-900 tracking-tighter italic leading-none">{{ $stat['value'] }}</h4>
+                    <div class="mt-5 h-[4px] w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div class="gsap-progress-bar h-full w-0 {{ $stat['color'] }} rounded-full" data-width="100%"></div>
+                    </div>
                 </div>
                 @endforeach
             </div>
 
-            {{-- DUA KOLOM INSIGHTS (AGENDA & PERSONEL) --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {{-- 1. AGENDA TAHAPAN TERDEKAT --}}
-                {{-- Tambahan class: gsap-col-left --}}
-                <div class="gsap-col-left lg:col-span-2 bg-white rounded-[3.5rem] p-10 shadow-2xl border border-slate-100 flex flex-col relative overflow-hidden group opacity-0">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 opacity-50"></div>
-                    
-                    <div class="flex items-center justify-between mb-10 relative z-10">
-                        <div class="flex items-center gap-4">
-                            <div class="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
-                            <h3 class="font-black text-slate-800 italic uppercase tracking-tighter text-xl">Agenda <span class="text-emerald-600">Tahapan Terkini</span></h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {{-- GRAFIK TREN PERKARA (DIREVISI) --}}
+                <div class="gsap-reveal lg:col-span-2 bg-white rounded-[3rem] p-8 shadow-xl opacity-0 translate-y-[20px] text-left border border-slate-50 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-8 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                            <h3 class="font-black text-slate-800 uppercase italic text-lg tracking-tighter">Analisis Tren <span class="text-emerald-600">Perkara {{ $tahunSekarang }}</span></h3>
                         </div>
-                        <span class="text-[9px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full uppercase tracking-widest animate-pulse border border-emerald-100">Live Schedule</span>
+                        <div class="flex gap-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                <span class="text-[8px] font-black uppercase text-slate-400 italic">Perdata</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                                <span class="text-[8px] font-black uppercase text-slate-400 italic">TUN</span>
+                            </div>
+                        </div>
                     </div>
+                    <div class="h-[320px] w-full relative z-10">
+                        <canvas id="perkaraChart"></canvas>
+                    </div>
+                </div>
 
-                    <div class="space-y-6 flex-1">
-                        @php
-                            $agenda_terkini = \App\Models\Tahapan::with('perkara')->latest('tanggal_tahapan')->take(3)->get();
-                        @endphp
-
-                        @forelse($agenda_terkini as $agenda)
-                        {{-- Tambahan class: gsap-agenda-item --}}
-                        <div class="gsap-agenda-item flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:bg-white transition-all duration-500 group/item">
-                            <div class="flex flex-col items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-colors">
-                                <span class="text-[10px] font-black uppercase leading-none mb-1">{{ \Carbon\Carbon::parse($agenda->tanggal_tahapan)->translatedFormat('M') }}</span>
-                                <span class="text-xl font-black leading-none">{{ \Carbon\Carbon::parse($agenda->tanggal_tahapan)->format('d') }}</span>
+                {{-- PERKARA MASUK TERKINI --}}
+                <div class="gsap-reveal bg-white rounded-[3rem] p-8 shadow-xl opacity-0 translate-y-[20px] text-left border border-slate-50 flex flex-col">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                            <h3 class="font-black text-slate-800 uppercase italic text-lg tracking-tighter">Masuk <span class="text-emerald-600">Terkini</span></h3>
+                        </div>
+                        <span class="px-2 py-1 bg-emerald-50 rounded text-[7px] font-black text-emerald-600 uppercase tracking-widest animate-pulse">Live</span>
+                    </div>
+                    <div class="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow" style="max-height: 320px;">
+                        @forelse($perkaras->take(5) as $perkara)
+                        <div class="flex items-center gap-4 p-4 bg-slate-50/50 rounded-[1.8rem] border border-slate-100 group hover:bg-emerald-50/50 hover:border-emerald-100 transition-all duration-300">
+                            <div class="w-11 h-11 bg-white rounded-2xl flex flex-col items-center justify-center shadow-sm border border-slate-100 shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                                <span class="text-[8px] font-black uppercase text-emerald-600 mb-0.5">{{ \Carbon\Carbon::parse($perkara->tanggal_masuk)->translatedFormat('M') }}</span>
+                                <span class="text-lg font-black text-slate-800">{{ \Carbon\Carbon::parse($perkara->tanggal_masuk)->format('d') }}</span>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between items-start mb-1">
-                                    <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-tight truncate pr-4">{{ $agenda->nama_tahapan }}</h4>
-                                    <span class="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md uppercase tracking-tighter whitespace-nowrap">{{ $agenda->perkara->jenis_perkara ?? 'UMUM' }}</span>
-                                </div>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest truncate italic">{{ $agenda->perkara->nomor_perkara ?? 'N/A' }}</p>
-                            </div>
-                            <div class="hidden md:block">
-                                <a href="{{ route('perkara.show', $agenda->perkara_id) }}" class="p-3 bg-white text-slate-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M9 5l7 7-7 7"/></svg>
-                                </a>
+                            <div class="text-left overflow-hidden flex-grow">
+                                <h4 class="text-[10px] font-black uppercase text-slate-800 truncate mb-1">{{ $perkara->nomor_perkara }}</h4>
+                                <p class="text-[8px] text-slate-400 font-bold italic truncate uppercase tracking-tighter">JPN: {{ strtoupper($perkara->jaksa->nama_jaksa ?? '-') }}</p>
                             </div>
                         </div>
                         @empty
-                        <div class="flex flex-col items-center justify-center h-full opacity-20 italic font-black uppercase tracking-[0.5em] text-[10px] py-10">
-                            Belum Ada Agenda Terdaftar
-                        </div>
+                        <div class="py-12 text-center opacity-30 italic font-black text-[10px] uppercase">Antrian data kosong</div>
                         @endforelse
                     </div>
-
-                    <a href="{{ route('perkara.index') }}" class="mt-8 text-center py-4 bg-slate-50 rounded-2xl text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-emerald-600 hover:text-white transition-all duration-300">Pantau Seluruh Progress Perkara</a>
+                    <a href="{{ route('perkara.index') }}" class="mt-6 text-[9px] font-black uppercase text-emerald-600 border-b border-emerald-100 hover:border-emerald-500 transition-all tracking-widest inline-block text-center pb-1">Buka Pantauan &rarr;</a>
                 </div>
-
-                {{-- 2. PERSONEL JPN TERAKTIF --}}
-                {{-- Tambahan class: gsap-col-right --}}
-                <div class="gsap-col-right bg-slate-900 rounded-[3.5rem] p-10 shadow-2xl text-white flex flex-col justify-between relative overflow-hidden group opacity-0">
-                    <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-emerald-500/10 to-transparent opacity-30"></div>
-                    <div class="relative z-10">
-                        <div class="flex items-center gap-4 mb-10">
-                            <div class="w-1.5 h-6 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                            <h3 class="font-black italic uppercase tracking-tighter text-xl text-emerald-400">Efektifitas <span class="text-white">Personel</span></h3>
-                        </div>
-
-                        <div class="space-y-8">
-                            @php
-                                $topJaksas = \App\Models\Jaksa::withCount('perkaras')->orderBy('perkaras_count', 'desc')->take(3)->get();
-                            @endphp
-
-                            @foreach($topJaksas as $index => $top)
-                            <div class="flex items-center gap-5 group/item">
-                                <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center font-black text-emerald-400 text-lg group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all">
-                                    {{ $index + 1 }}
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="text-[11px] font-black uppercase tracking-tight leading-none mb-2 italic">{{ $top->nama_jaksa }}</h4>
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                                            <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: {{ ($top->perkaras_count > 0 ? ($top->perkaras_count / 10) * 100 : 0) }}%"></div>
-                                        </div>
-                                        <span class="text-[9px] font-black text-emerald-400 uppercase tracking-tighter">{{ $top->perkaras_count }} Case</span>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="mt-12 p-6 bg-white/5 border border-white/10 rounded-[2rem] text-center relative z-10 group-hover:bg-emerald-600/10 transition-all">
-                        <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1 italic">Visi Bidang Datun</p>
-                        <p class="text-[10px] font-medium text-slate-400 italic leading-relaxed group-hover:text-emerald-100">"Menegakkan Keadilan Melalui Administrasi Perkara yang Transparan dan Akuntabel."</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- FOOTER IDENTITAS --}}
-            {{-- Tambahan class: gsap-footer --}}
-            <div class="gsap-footer pt-20 pb-10 flex flex-col items-center gap-8 opacity-40 group opacity-0">
-                <div class="flex items-center gap-10">
-                    <div class="h-[1px] w-48 bg-gradient-to-r from-transparent via-emerald-400 to-transparent group-hover:w-64 transition-all duration-1000"></div>
-                    <img src="{{ asset('img/logo jaksa.png') }}" class="w-12 h-auto grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                    <div class="h-[1px] w-48 bg-gradient-to-l from-transparent via-emerald-400 to-transparent group-hover:w-64 transition-all duration-1000"></div>
-                </div>
-                <p class="text-[11px] font-black text-slate-800 uppercase tracking-[1.2em] italic leading-none ml-[1.2em]">Integritas • Profesionalisme • Kejari Banjarmasin</p>
             </div>
         </div>
     </div>
 
-    {{-- GSAP INTEGRATION SECTION --}}
+    {{-- SCRIPTS GSAP & CHART.JS --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            gsap.registerPlugin(ScrollTrigger);
+        document.addEventListener("DOMContentLoaded", () => {
+            // Animasi Real-time Clock
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('real-time-clock').innerText = now.toLocaleTimeString('id-ID');
+            }, 1000);
 
-            // 1. Initial Load Timeline (Header & Hero)
-            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+            // GSAP Reveals
+            gsap.to(".gsap-reveal", { y: 0, opacity: 1, duration: 1.2, stagger: 0.3, ease: "power4.out" });
+            gsap.to(".gsap-stat-card", { scale: 1, opacity: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.7)", delay: 0.6 });
+            gsap.to(".gsap-progress-bar", { width: "100%", duration: 2, ease: "power2.inOut", delay: 1.2 });
 
-            tl.to(".gsap-header", { 
-                y: 0, 
-                opacity: 1, 
-                duration: 1 
-            })
-            .to(".gsap-hero-main", { 
-                x: 0, 
-                opacity: 1, 
-                duration: 1.2,
-                from: { x: -50 } // Menentukan nilai awal di sini agar CSS tidak 'flashing'
-            }, "-=0.6")
-            .to(".gsap-hero-side", { 
-                x: 0, 
-                opacity: 1, 
-                duration: 1.2,
-                from: { x: 50 }
-            }, "-=1");
+            // Grafik Chart.js (REVISI DATA PERDATA & TUN SEJAJAR)
+            const ctx = document.getElementById('perkaraChart').getContext('2d');
+            
+            const gradPerdata = ctx.createLinearGradient(0, 0, 0, 300);
+            gradPerdata.addColorStop(0, 'rgba(249, 115, 22, 0.2)');
+            gradPerdata.addColorStop(1, 'rgba(249, 115, 22, 0.0)');
 
-            // 2. Stats Grid (Staggered Animation saat scroll)
-            gsap.fromTo(".gsap-stat-card", 
-                { y: 50, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: "back.out(1.2)",
-                    scrollTrigger: {
-                        trigger: ".gsap-stats-container",
-                        start: "top 85%", // Mulai animasi saat bagian atas elemen mencapai 85% viewport
+            const gradTun = ctx.createLinearGradient(0, 0, 0, 300);
+            gradTun.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+            gradTun.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                    datasets: [
+                        {
+                            label: 'Perdata',
+                            data: @json($dataGrafikPerdata), 
+                            borderColor: '#f97316',
+                            backgroundColor: gradPerdata,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#f97316',
+                        },
+                        {
+                            label: 'Tata Usaha Negara',
+                            data: @json($dataGrafikTun), 
+                            borderColor: '#2563eb',
+                            backgroundColor: gradTun,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#2563eb',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.03)', borderDash: [5, 5] }, ticks: { font: { size: 10, weight: 'bold' }, stepSize: 1 } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: '#0f172a', padding: 12, titleFont: { size: 14, weight: 'black' }, bodyFont: { weight: 'bold' }, cornerRadius: 12, displayColors: true }
                     }
-                }
-            );
-
-            // 3. Kolom Kiri & Kanan Bawah
-            gsap.fromTo(".gsap-col-left", 
-                { y: 60, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: ".gsap-col-left",
-                        start: "top 85%",
-                    }
-                }
-            );
-
-            gsap.fromTo(".gsap-col-right", 
-                { y: 80, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    delay: 0.2, // Sedikit delay agar tidak muncul bersamaan persis dengan kiri
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: ".gsap-col-right",
-                        start: "top 85%",
-                    }
-                }
-            );
-
-            // 4. Agenda Items (Cascading effect didalam card)
-            gsap.fromTo(".gsap-agenda-item", 
-                { x: -20, opacity: 0 },
-                {
-                    x: 0,
-                    opacity: 1,
-                    duration: 0.5,
-                    stagger: 0.1,
-                    delay: 0.5,
-                    scrollTrigger: {
-                        trigger: ".gsap-col-left",
-                        start: "top 70%",
-                    }
-                }
-            );
-
-            // 5. Background Blob Floating (Continuous)
-            gsap.to(".gsap-blob", {
-                y: "-20%",
-                x: "20%",
-                duration: 8,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-
-            // 6. Footer Fade In
-            gsap.to(".gsap-footer", {
-                opacity: 0.4, // Sesuai class asli opacity-40
-                y: 0,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: ".gsap-footer",
-                    start: "top 95%",
                 }
             });
         });

@@ -9,19 +9,18 @@ class Tahapan extends Model
 {
     use HasFactory;
 
-    // Kolom yang boleh diisi secara massal
+    protected $table = 'tahapan_perkaras';
+
     protected $fillable = [
-        'perkara_id', 
-        'nama_tahapan', 
-        'tanggal_tahapan', 
-        'keterangan'
+        'perkara_id',
+        'nama_tahapan', // PERBAIKAN: Hapus huruf 's' di belakangnya
+        'tanggal_tahapan',
+        'keterangan',
+        'file_tahapan',
     ];
 
-    /**
-     * RELASI: Setiap Tahapan dimiliki oleh satu Perkara
-     */
     public function perkara()
     {
-        return $this->belongsTo(Perkara::class);
+        return $this->belongsTo(Perkara::class, 'perkara_id');
     }
 }

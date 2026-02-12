@@ -10,26 +10,32 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        // GANTI email MENJADI nip
-        $table->string('nip')->unique(); 
-        $table->timestamp('email_verified_at')->nullable();
-        $table->string('password');
-        // Role tetap admin atau pimpinan
-        $table->enum('role', ['admin', 'pimpinan'])->default('admin'); 
-        $table->rememberToken();
-        $table->timestamps();
-    });
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
 
-        // Schema::create('password_reset_tokens', function (Blueprint $table) {
-        //     $table->string('email')->primary();
-        //     $table->string('token');
-        //     $table->timestamp('created_at')->nullable();
-        // });
+            // Menggunakan NIP sebagai identitas unik untuk login di Kejari
+            $table->string('nip')->unique();
 
+            // Email tetap opsional (nullable) jika suatu saat dibutuhkan untuk notifikasi
+            $table->string('email')->nullable()->unique();
+            $table->timestamp('email_verified_at')->nullable();
+
+            $table->string('password');
+
+            /**
+             * ROLE SYSTEM
+             * Admin: Kasi Datun (Otoritas & Master Data)
+             * Staff: Operator (Update & Verifikasi Mandiri)
+             */
+            $table->enum('role', ['admin', 'staff'])->default('staff');
+
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        // Tabel session untuk mencatat login user
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
@@ -46,7 +52,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
 };

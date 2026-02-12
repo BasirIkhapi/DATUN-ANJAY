@@ -4,35 +4,57 @@
     <meta charset="utf-8">
     <title>Laporan Monitoring Perkara - {{ $perkara->nomor_perkara }}</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.5; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        .header h1 { margin: 0; text-transform: uppercase; font-size: 18px; }
-        .header p { margin: 5px 0 0; font-size: 12px; }
-        .section-title { background: #f4f4f4; padding: 5px 10px; font-weight: bold; margin-top: 20px; text-transform: uppercase; font-size: 14px; }
+        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.4; margin: 20px; }
+        
+        /* KOP SURAT */
+        .kop-surat { position: relative; height: 100px; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .logo-kejaksaan { position: absolute; left: 0; top: 0; width: 70px; }
+        .identitas-instansi { text-align: center; margin-left: 70px; }
+        .identitas-instansi h1 { margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .identitas-instansi h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
+        .identitas-instansi p { margin: 2px 0 0; font-size: 10px; font-style: italic; }
+
+        .judul-laporan { text-align: center; text-decoration: underline; font-weight: bold; text-transform: uppercase; font-size: 14px; margin: 20px 0; }
+
+        .section-title { background: #f4f4f4; padding: 5px 10px; font-weight: bold; margin-top: 20px; text-transform: uppercase; font-size: 12px; border-left: 4px solid #059669; }
+        
         .info-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-        .info-table td { padding: 5px 0; }
-        .info-table td.label { width: 150px; color: #666; }
+        .info-table td { padding: 4px 0; vertical-align: top; }
+        .info-table td.label { width: 150px; color: #444; }
         .info-table td.value { font-weight: bold; }
-        .timeline-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11px; }
-        .timeline-table th { background: #3b82f6; color: white; padding: 8px; text-align: left; text-transform: uppercase; }
-        .timeline-table td { border: 1px solid #e5e7eb; padding: 8px; }
-        .footer { margin-top: 50px; text-align: right; font-size: 12px; }
+
+        .timeline-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+        .timeline-table th { background: #059669; color: white; padding: 10px 8px; text-align: left; text-transform: uppercase; border: 1px solid #047857; }
+        .timeline-table td { border: 1px solid #cbd5e1; padding: 8px; }
+
+        /* FOOTER TANDA TANGAN */
+        .footer-container { margin-top: 40px; width: 100%; }
+        .tanda-tangan { float: right; width: 250px; text-align: center; font-size: 12px; }
+        .tanda-tangan p { margin: 0; }
+        .nama-pejabat { margin-top: 60px !important; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Kejaksaan Negeri - Divisi DATUN</h1>
-        <p>Laporan Monitoring Tahapan Perkara Perdata dan Tata Usaha Negara</p>
+    {{-- KOP SURAT RESMI --}}
+    <div class="kop-surat">
+        <img src="{{ public_path('img/logo jaksa.png') }}" class="logo-kejaksaan">
+        <div class="identitas-instansi">
+            <h1>Kejaksaan Agung Republik Indonesia</h1>
+            <h2>Kejaksaan Negeri Banjarmasin</h2>
+            <p>Jl. Adhyaksa No.1, Kayu Tangi, Kec. Banjarmasin Utara, Kota Banjarmasin</p>
+        </div>
     </div>
 
-    <div class="section-title">Detail Perkara</div>
+    <div class="judul-laporan">Lembar Kendali Progres Tahapan Perkara</div>
+
+    <div class="section-title">Identitas Perkara</div>
     <table class="info-table">
         <tr>
-            <td class="label">Nomor Perkara</td>
+            <td class="label">Nomor Registrasi</td>
             <td class="value">: {{ $perkara->nomor_perkara }}</td>
         </tr>
         <tr>
-            <td class="label">Jaksa JPN</td>
+            <td class="label">Jaksa Pengacara Negara</td>
             <td class="value">: {{ $perkara->jaksa->nama_jaksa }}</td>
         </tr>
         <tr>
@@ -44,42 +66,53 @@
             <td class="value">: {{ $perkara->tergugat }}</td>
         </tr>
         <tr>
-            <td class="label">Jenis Perkara</td>
+            <td class="label">Klasifikasi Perkara</td>
             <td class="value">: {{ $perkara->jenis_perkara }}</td>
+        </tr>
+        <tr>
+            <td class="label">Status Akhir</td>
+            <td class="value">: {{ strtoupper($perkara->status_akhir) }}</td>
         </tr>
     </table>
 
-    <div class="section-title">Riwayat Progres (Timeline)</div>
+    <div class="section-title">Riwayat Persidangan / Tahapan</div>
     <table class="timeline-table">
         <thead>
             <tr>
-                <th width="30">No</th>
-                <th width="100">Tanggal</th>
-                <th width="150">Nama Tahapan</th>
-                <th>Keterangan</th>
+                <th width="30" style="text-align: center;">No</th>
+                <th width="110">Tanggal</th>
+                <th width="160">Tahapan Sidang</th>
+                <th>Hasil / Keterangan</th>
             </tr>
         </thead>
         <tbody>
             @forelse($perkara->tahapans->sortBy('tanggal_tahapan') as $index => $tahapan)
             <tr>
                 <td style="text-align: center;">{{ $index + 1 }}</td>
-                <td>{{ \Carbon\Carbon::parse($tahapan->tanggal_tahapan)->format('d/m/Y') }}</td>
-                <td style="font-weight: bold;">{{ $tahapan->nama_tahapan }}</td>
+                {{-- Format Tanggal Indonesia --}}
+                <td>{{ \Carbon\Carbon::parse($tahapan->tanggal_tahapan)->translatedFormat('d F Y') }}</td>
+                <td style="font-weight: bold; text-transform: uppercase;">{{ $tahapan->nama_tahapan }}</td>
                 <td>{{ $tahapan->keterangan ?? '-' }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="4" style="text-align: center; color: #999;">Belum ada riwayat progres yang tercatat.</td>
+                <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Belum ada riwayat progres yang tercatat.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
-    <div class="footer">
-        <p>Dicetak pada: {{ date('d F Y H:i') }}</p>
-        <br><br><br>
-        <p>( __________________________ )</p>
-        <p>Admin DATUN</p>
+    {{-- BAGIAN TANDA TANGAN --}}
+    <div class="footer-container">
+        <div class="tanda-tangan">
+            <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p>Petugas Administrasi Datun,</p>
+            
+            {{-- Nama sesuai aturan Kejaksaan: Tidak Kapital Semua & Tidak Garis Bawah --}}
+            <p class="nama-pejabat">Basir Ikhapi</p>
+            <p>NIP. 2210010341</p>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 </body>
 </html>

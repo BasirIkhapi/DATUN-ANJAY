@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Jaksa;
 use Illuminate\Database\Seeder;
+use App\Models\Jaksa; // Pastikan model ini terpanggil dengan benar
 
 class JaksaSeeder extends Seeder
 {
@@ -23,7 +23,11 @@ class JaksaSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            Jaksa::updateOrCreate(['nip' => $item['nip']], $item);
+            // Menggunakan updateOrCreate agar tidak duplikat jika seeder dijalankan ulang
+            Jaksa::updateOrCreate(
+                ['nip' => $item['nip']],
+                $item
+            );
         }
     }
 }

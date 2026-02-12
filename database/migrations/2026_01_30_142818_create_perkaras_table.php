@@ -6,31 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    public function up(): void
+    {
+        Schema::create('perkaras', function (Blueprint $table) {
+            $table->id();
 
-    
-public function up(): void
-{
-    Schema::create('perkaras', function (Blueprint $table) {
-        $table->id();
-        // WAJIB ADA: Menghubungkan ke tabel jaksas
-        $table->foreignId('jaksa_id')->constrained('jaksas')->onDelete('cascade');
-        
-        $table->string('nomor_perkara')->unique();
-        $table->string('penggugat');
-        $table->string('tergugat');
-        $table->enum('jenis_perkara', ['Perdata', 'Tata Usaha Negara']);
-        $table->date('tanggal_masuk');
-        $table->enum('status_akhir', ['Proses', 'Selesai'])->default('Proses');
-        $table->timestamps();
-    });
-}
+            // 1. Relasi ke Master Data Jaksa (Tugas Admin: Menunjuk JPN)
+            $table->foreignId('jaksa_id')->constrained('jaksas')->onDelete('cascade');
 
-    /**
-     * Reverse the migrations.
-     */
+            // 2. Identitas Perkara (Tugas Admin: Registrasi Awal)
+            $table->string('nomor_perkara')->unique();
+            $table->string('penggugat');
+            $table->string('tergugat');
+            $table->enum('jenis_perkara', ['Perdata', 'Tata Usaha Negara']);
+            $table->date('tanggal_masuk');
+
+            // 3. Operasional & Dokumen (Tugas Staff: Update & Upload)
+            $table->boolean('is_verified')->default(false); // Validasi oleh Staff
+            $table->string('file_skk')->nullable(); // Upload Surat Kuasa Khusus
+
+            // 4. Status Final (Pengawasan Admin)
+            $table->enum('status_akhir', ['Proses', 'Selesai'])->default('Proses');
+
+            $table->timestamps();
+        });
+    }
+
     public function down(): void
     {
         Schema::dropIfExists('perkaras');

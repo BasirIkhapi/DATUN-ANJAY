@@ -60,14 +60,14 @@
         .tabel-resmi th { 
             background-color: #f2f2f2; 
             border: 1px solid #000; 
-            padding: 8px; 
-            font-size: 9pt; 
+            padding: 10px 8px; 
+            font-size: 10pt; 
             text-transform: uppercase; 
         }
         .tabel-resmi td { 
             border: 1px solid #000; 
-            padding: 8px; 
-            font-size: 10pt; 
+            padding: 10px 8px; 
+            font-size: 11pt; 
             vertical-align: middle; 
         }
         
@@ -80,7 +80,7 @@
         }
         .ttd-box { 
             float: right; 
-            width: 40%; 
+            width: 45%; 
             text-align: center; 
             margin-top: 30px; 
         }
@@ -106,10 +106,10 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="30%">Nama Lengkap Personel</th>
-                <th width="20%">NIP / NRP</th>
-                <th width="25%">Pangkat / Golongan</th>
-                <th width="20%">Total Beban Kerja</th>
+                <th width="40%">Nama Lengkap Personel</th>
+                <th width="25%">NIP / NRP</th>
+                <th width="30%">Pangkat / Golongan</th>
+                {{-- Kolom Beban Kerja Telah Dihapus --}}
             </tr>
         </thead>
         <tbody>
@@ -118,13 +118,12 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td><strong>{{ strtoupper($jaksa->nama_jaksa) }}</strong></td>
                 <td class="text-center">{{ $jaksa->nip ?? '-' }}</td>
-                {{-- UPDATE: MENAMPILKAN PANGKAT/GOLONGAN --}}
                 <td class="text-center italic">{{ $jaksa->pangkat_golongan ?? '-' }}</td>
-                <td class="text-center">{{ $jaksa->perkaras_count ?? 0 }} Perkara</td>
+                {{-- Data Beban Kerja Telah Dihapus --}}
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="text-center"><em>Data personel JPN tidak ditemukan.</em></td>
+                <td colspan="4" class="text-center"><em>Data personel JPN tidak ditemukan.</em></td>
             </tr>
             @endforelse
         </tbody>
@@ -135,7 +134,7 @@
         <div class="ttd-box">
             <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
             <p>Kepala Seksi Perdata dan TUN,</p>
-            <br><br><br>
+            <br><br><br><br>
             <p><strong>......................................................</strong></p>
             <p>Jaksa Utama Pratama / NIP.</p>
         </div>

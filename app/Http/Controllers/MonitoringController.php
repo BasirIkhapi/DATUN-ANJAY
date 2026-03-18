@@ -3,63 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Perkara;
-use App\Models\Tahapan; // Pastikan ini merujuk ke TahapanPerkara jika itu tabel riwayatnya
+use App\Models\Tahapan;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MonitoringController extends Controller
 {
     /**
-     * TAMPILAN MONITORING (Untuk Staff)
+     * TAMPILAN MONITORING UTAMA
+     * Menampilkan semua perkara untuk dipantau oleh Staff atau Admin.
      */
     public function index()
     {
-        // Menampilkan semua perkara untuk dipantau oleh Staff
-        $perkaras = Perkara::with(['jaksa', 'tahapanPerkaras'])->latest()->get();
+        // Menggunakan relasi 'tahapans' sesuai dengan koding di PerkaraController
+        $perkaras = Perkara::with(['jaksa', 'tahapans'])->latest()->get();
         return view('admin.perkara.monitoring', compact('perkaras'));
     }
 
+    /**
+     * DETAIL PERKARA
+     */
     public function show($id)
     {
-        // Pastikan nama relasi di model Perkara adalah 'tahapanPerkaras'
-        $perkara = Perkara::with(['jaksa', 'tahapanPerkaras'])->findOrFail($id);
+        $perkara = Perkara::with(['jaksa', 'tahapans'])->findOrFail($id);
         return view('admin.perkara.show', compact('perkara'));
     }
 
     /**
-     * TUGAS STAFF: VERIFIKASI BERKAS & UPLOAD SKK
-     * Ini fungsi penting agar alur aplikasi dianggap jelas oleh dosen.
+     * VERIFIKASI BERKAS OLEH STAFF
+     * Disesuaikan dengan alur verifikasi dan pencatatan log aktivitas.
      */
     public function verifikasi(Request $request, $id)
     {
         $request->validate([
-            'file_skk' => 'required|mimes:pdf|max:2048', // Validasi file PDF maks 2MB
+            'status' => 'required|in:setuju,tolak',
+            'alasan_penolakan' => 'required_if:status,tolak|nullable|string',
         ]);
 
         $perkara = Perkara::findOrFail($id);
+        $isSetuju = $request->status === 'setuju';
 
-        if ($request->hasFile('file_skk')) {
-            // Hapus file lama jika ada
-            if ($perkara->file_skk) {
-                Storage::delete($perkara->file_skk);
-            }
+        $perkara->update([
+            'is_verified' => $isSetuju,
+            'alasan_penolakan' => $isSetuju ? null : $request->alasan_penolakan,
+            'status_akhir' => 'Proses'
+        ]);
 
-            // Simpan file baru
-            $path = $request->file('file_skk')->store('public/skk');
-            
-            $perkara->update([
-                'file_skk' => $path,
-                'is_verified' => true, // Tandai sudah diverifikasi
-                'status_akhir' => 'Proses'
-            ]);
-        }
+        // Mencatat aktivitas verifikasi ke dalam activity_logs
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'perkara_id' => $perkara->id,
+            'deskripsi' => "Staff memverifikasi berkas perkara nomor: " . $perkara->nomor_perkara . " (Status: " . ucfirst($request->status) . ")"
+        ]);
 
-        return back()->with('success', 'Berkas perkara telah diverifikasi oleh Staff.');
+        return back()->with('success', 'Status verifikasi berkas berhasil diperbarui.');
     }
 
     /**
-     * TUGAS STAFF: INPUT TAHAPAN SIDANG
+     * INPUT TAHAPAN SIDANG
+     * Menggunakan model Tahapan yang merujuk pada tabel 'tahapan_perkaras'.
      */
     public function storeTahapan(Request $request)
     {
@@ -70,27 +76,54 @@ class MonitoringController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        // Menggunakan Model Tahapan (Pastikan fillable sudah benar)
-        Tahapan::create([
+        $tahapan = Tahapan::create([
             'perkara_id' => $request->perkara_id,
             'tanggal_tahapan' => $request->tanggal_tahapan,
             'nama_tahapan' => strtoupper($request->nama_tahapan),
             'keterangan' => strtoupper($request->keterangan),
         ]);
 
-        return back()->with('success', 'Tahapan sidang berhasil ditambahkan oleh Staff!');
+        // Mencatat aktivitas penambahan tahapan
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'perkara_id' => $request->perkara_id,
+            'deskripsi' => "Staff menambahkan tahapan sidang: " . strtoupper($request->nama_tahapan)
+        ]);
+
+        return back()->with('success', 'Tahapan sidang berhasil ditambahkan!');
     }
 
     /**
-     * FUNGSI CETAK PDF (Output Akhir)
+     * FUNGSI CETAK MONITORING INDIVIDUAL (Output PDF)
      */
     public function cetakPDF($id)
     {
-        $perkara = Perkara::with(['jaksa', 'tahapanPerkaras'])->findOrFail($id);
-        
-        $pdf = Pdf::loadView('admin.perkara.monitoring_pdf', compact('perkara'))
-                ->setPaper('a4', 'portrait');
+        $perkara = Perkara::with(['jaksa', 'tahapans'])->findOrFail($id);
 
-        return $pdf->stream('Monitoring_Perkara_' . $perkara->nomor_perkara . '.pdf');
+        $pdf = Pdf::loadView('admin.perkara.monitoring_pdf', compact('perkara'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Monitoring_Perkara_' . str_replace('/', '-', $perkara->nomor_perkara) . '.pdf');
+    }
+
+    /**
+     * LAPORAN TAMBAHAN UNTUK SKRIPSI: DURASI PENYELESAIAN
+     */
+    public function cetakDurasi()
+    {
+        $perkaras = Perkara::with(['tahapans'])
+            ->where('status_akhir', 'Selesai')
+            ->get()
+            ->map(function ($perkara) {
+                $tglMasuk = Carbon::parse($perkara->tanggal_masuk);
+                // Mengambil tanggal tahapan terakhir sebagai waktu selesai
+                $tglSelesai = Carbon::parse($perkara->tahapans->max('tanggal_tahapan'));
+                $perkara->durasi_hari = $tglMasuk->diffInDays($tglSelesai);
+                return $perkara;
+            });
+
+        return Pdf::loadView('admin.arsip.pdf_durasi', compact('perkaras'))
+            ->setPaper('a4', 'landscape')
+            ->stream('Laporan_Durasi_Penyelesaian_Perkara.pdf');
     }
 }

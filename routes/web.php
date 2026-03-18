@@ -6,7 +6,7 @@ use App\Http\Controllers\PerkaraController;
 use App\Http\Controllers\JaksaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
-use App\Models\ActivityLog;
+use App\Models\ActivityLog; // Memastikan Model diimport dengan benar
 
 // Halaman awal aplikasi
 Route::get('/', function () {
@@ -27,7 +27,6 @@ Route::middleware(['auth'])->group(function () {
 
         // AKSES KHUSUS STAFF: HANYA VERIFIKASI (VALIDATOR)
         Route::middleware(['can:access-staff'])->group(function () {
-            // Staff memverifikasi (PATCH) hasil input Admin
             Route::patch('/verifikasi/{id}', [PerkaraController::class, 'verifikasi'])->name('perkara.verifikasi');
         });
 
@@ -35,13 +34,8 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['can:access-admin'])->group(function () {
             Route::get('/create', [PerkaraController::class, 'create'])->name('perkara.create');
             Route::post('/store', [PerkaraController::class, 'store'])->name('perkara.store');
-
-            // Admin mengunggah/memperbarui berkas SKK
             Route::post('/upload-skk/{id}', [PerkaraController::class, 'uploadSKK'])->name('perkara.upload-skk');
-
-            // Admin menginput progres sidang (Pindahan otoritas dari Staff)
             Route::post('/store-tahapan', [PerkaraController::class, 'storeTahapan'])->name('perkara.storeTahapan');
-
             Route::get('/edit/{id}', [PerkaraController::class, 'edit'])->name('perkara.edit');
             Route::patch('/update/{id}', [PerkaraController::class, 'update'])->name('perkara.update');
             Route::delete('/destroy/{id}', [PerkaraController::class, 'destroy'])->name('perkara.destroy');
@@ -52,20 +46,22 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak-label/{id}', [PerkaraController::class, 'cetakLabel'])->name('perkara.cetakLabel');
     });
 
-    // --- 2. PUSAT DATA & ARSIP ---
+    // --- 2. PUSAT DATA & ARSIP (9 LAPORAN) ---
     Route::prefix('arsip')->group(function () {
-        // View Utama Arsip (Bisa diakses Staff & Admin)
         Route::get('/', [PerkaraController::class, 'pusatArsip'])->name('perkara.arsip.index');
 
-        // LAPORAN REKAP (Akses Staff & Admin)
+        // Laporan Rekap & Umum (Akses Staff & Admin)
         Route::get('/rekap-arsip', [PerkaraController::class, 'cetakArsip'])->name('perkara.arsip.cetakArsip');
 
-        // LAPORAN STRATEGIS (Eksklusif Admin / Kasi)
+        // Laporan Strategis & Analitis (Eksklusif Admin)
         Route::middleware(['can:access-admin'])->group(function () {
             Route::get('/stagnansi', [PerkaraController::class, 'cetakStagnansi'])->name('perkara.arsip.stagnansi');
             Route::get('/kinerja', [PerkaraController::class, 'cetakKinerja'])->name('perkara.arsip.kinerja');
-            Route::get('/durasi', [PerkaraController::class, 'cetakDurasi'])->name('perkara.arsip.durasi');
             Route::get('/statistik', [PerkaraController::class, 'cetakStatistik'])->name('perkara.arsip.statistik');
+
+            // --- 2 LAPORAN BARU UNTUK SKRIPSI ---
+            Route::get('/durasi', [PerkaraController::class, 'cetakDurasi'])->name('perkara.arsip.durasi');
+            Route::get('/cetak-log', [PerkaraController::class, 'cetakLogAktivitas'])->name('perkara.arsip.cetakLog');
         });
     });
 
@@ -82,8 +78,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-        // LOG AUDIT
+        // LOG AUDIT (View Table)
         Route::get('/logs', function () {
+            // Menggunakan Model ActivityLog dengan benar untuk menghindari error Target Class Exist
             $logs = ActivityLog::with('user')->latest()->paginate(20);
             return view('admin.logs.index', compact('logs'));
         })->name('logs.index');

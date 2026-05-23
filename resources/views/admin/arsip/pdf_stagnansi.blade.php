@@ -23,7 +23,7 @@
             height: auto;
         }
         .header-container h2 { margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-        .header-container h1 { margin: 2px 0; font-size: 18px; text-transform: uppercase; }
+        .header-container h1 { margin: 2px 0; font-size: 18px; text-transform: uppercase; font-weight: bold; }
         .header-container p { margin: 2px 0 0; font-size: 9px; font-style: italic; }
         
         /* Garis Khas Surat Dinas */
@@ -32,7 +32,7 @@
 
         /* Judul Laporan */
         .title-container { text-align: center; margin-bottom: 25px; text-transform: uppercase; }
-        .title-container h4 { margin: 0; font-size: 12px; text-decoration: underline; }
+        .title-container h4 { margin: 0; font-size: 12px; text-decoration: underline; font-weight: bold; }
         .title-container p { margin: 5px 0; font-size: 9px; font-weight: bold; color: #dc2626; }
 
         /* Tabel Styling */
@@ -59,7 +59,6 @@
 
     {{-- KOP SURAT BERLOGO --}}
     <div class="header-container">
-        {{-- Gunakan path absolut untuk PDF --}}
         <img src="{{ public_path('img/logo jaksa.png') }}" class="logo-instansi">
         <h2>KEJAKSAAN AGUNG REPUBLIK INDONESIA</h2>
         <h1>KEJAKSAAN NEGERI BANJARMASIN</h1>
@@ -97,7 +96,6 @@
                     <td class="text-uppercase">{{ $perkara->jaksa->nama_jaksa ?? 'TIDAK TERSEDIA' }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($perkara->tanggal_masuk)->format('d/m/Y') }}</td>
                     <td class="text-center">
-                        {{-- Mengambil tanggal update terakhir sesuai attribute di Model --}}
                         {{ $perkara->tgl_akhir ?? \Carbon\Carbon::parse($perkara->tanggal_masuk)->format('d/m/Y') }}
                     </td>
                     <td class="text-center warning-badge italic">
@@ -118,17 +116,21 @@
         * Laporan ini dihasilkan otomatis oleh sistem SIM-DATUN sebagai instrumen Early Warning System (EWS) untuk menjaga akurasi data.
     </div>
 
-    {{-- TANDA TANGAN --}}
+    {{-- TANDA TANGAN DINAMIS --}}
     <div class="footer-sign">
         <table class="sign-table">
             <tr>
                 <td width="65%"></td>
                 <td width="35%">
                     <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-                    <p class="font-bold text-uppercase">Kepala Seksi Perdata dan TUN</p>
+                    <p class="font-bold text-uppercase">
+                        {{ Auth::user()->role == 'admin' ? 'Kepala Seksi Perdata dan TUN' : 'Petugas Administrator' }}
+                    </p>
                     <div class="space-ttd"></div>
-                    <p class="font-bold text-uppercase" style="text-decoration: underline;">H. AKHMAD BUDI S., S.H., M.H.</p>
-                    <p>Jaksa Utama Pratama / NIP. 19780521 200212 1 002</p>
+                    <p class="font-bold text-uppercase" style="text-decoration: underline;">
+                        {{ Auth::user()->name }}
+                    </p>
+                    <p>NIP. {{ Auth::user()->nip ?? '..........................' }}</p>
                 </td>
             </tr>
         </table>

@@ -135,7 +135,7 @@
         <tr>
             <td class="label">Jaksa Pengacara Negara</td>
             <td class="separator">:</td>
-            <td class="content">{{ $perkara->jaksa->nama_jaksa }}</td>
+            <td class="content">{{ $perkara->jaksa?->nama_jaksa ?? 'Belum Ditunjuk' }}</td>
         </tr>
         <tr>
             <td class="label">Para Pihak</td>
@@ -160,10 +160,12 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($perkara->tahapans->sortBy('tanggal') as $index => $t)
+            {{-- Perbaikan: Mengubah properti sorting dari 'tanggal' menjadi 'tanggal_tahapan' --}}
+            @forelse($perkara->tahapans->sortBy('tanggal_tahapan') as $index => $t)
             <tr>
                 <td align="center">{{ $index + 1 }}</td>
-                <td align="center">{{ \Carbon\Carbon::parse($t->tanggal)->translatedFormat('d F Y') }}</td>
+                {{-- Perbaikan: Mengubah $t->tanggal menjadi $t->tanggal_tahapan --}}
+                <td align="center">{{ \Carbon\Carbon::parse($t->tanggal_tahapan)->translatedFormat('d F Y') }}</td>
                 <td><strong>{{ $t->nama_tahapan }}</strong></td>
                 <td>{{ $t->keterangan ?? '-' }}</td>
             </tr>

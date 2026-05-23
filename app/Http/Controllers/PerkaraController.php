@@ -204,7 +204,14 @@ class PerkaraController extends Controller
     public function cetakDetail($id)
     {
         $perkara = Perkara::with(['jaksa', 'tahapans'])->findOrFail($id);
-        return Pdf::loadView('admin.perkara.pdf_detail', compact('perkara'))
+
+        // Perbaikan: Menambahkan variabel judulLaporan yang dipanggil di file blade
+        $data = [
+            'perkara' => $perkara,
+            'judulLaporan' => 'LAPORAN DETAIL PEMANTAUAN TAHAPAN PERKARA'
+        ];
+
+        return Pdf::loadView('admin.perkara.pdf_detail', $data)
             ->setPaper('a4', 'portrait')->stream('Detail_Perkara.pdf');
     }
 
